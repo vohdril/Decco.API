@@ -48,6 +48,18 @@ public partial class DeccoDbContext : DbContext
 
     public virtual DbSet<VwRelatorioSigma> VwRelatorioSigmas { get; set; }
 
+    public virtual DbSet<CatCognicaoAparente> CatCognicaoAparentes { get; set; }
+
+    public virtual DbSet<CatPericulosidade> CatPericulosidades { get; set; }
+
+    public virtual DbSet<Laboratorio> Laboratorios { get; set; }
+
+    public virtual DbSet<ProtocoloContencao> ProtocoloContencaos { get; set; }
+
+    public virtual DbSet<ProtocoloAplicadoEm> ProtocoloAplicadoEms { get; set; }
+
+    public virtual DbSet<NotificacaoAnomalia> NotificacaoAnomalias { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Anomalium>(entity =>
@@ -119,6 +131,14 @@ public partial class DeccoDbContext : DbContext
                 .HasForeignKey(d => d.TipoMateriaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Anomalia__TipoMa__4222D4EF");
+
+            entity.HasOne(d => d.CognicaoAparente).WithMany(p => p.Anomalia)
+                .HasForeignKey(d => d.CognicaoAparenteId)
+                .HasConstraintName("FK_Anomalia_CognicaoAparente");
+
+            entity.HasOne(d => d.Periculosidade).WithMany(p => p.Anomalia)
+                .HasForeignKey(d => d.PericulosidadeId)
+                .HasConstraintName("FK_Anomalia_Periculosidade");
         });
 
         modelBuilder.Entity<Artefato>(entity =>
@@ -523,6 +543,81 @@ public partial class DeccoDbContext : DbContext
             entity.Property(e => e.ResponsavelPesquisa).HasMaxLength(255);
             entity.Property(e => e.SitioContencao).HasMaxLength(100);
             entity.Property(e => e.UltimoIncidente).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<CatCognicaoAparente>(entity =>
+        {
+            entity.ToTable("Cat_CognicaoAparente");
+            entity.HasIndex(e => e.Codigo).IsUnique();
+            entity.Property(e => e.Codigo).HasMaxLength(5).IsUnicode(false);
+            entity.Property(e => e.Nome).HasMaxLength(50).IsUnicode(false);
+        });
+
+        modelBuilder.Entity<CatPericulosidade>(entity =>
+        {
+            entity.ToTable("Cat_Periculosidade");
+            entity.HasIndex(e => e.Nivel).IsUnique();
+            entity.Property(e => e.Nome).HasMaxLength(50).IsUnicode(false);
+            entity.Property(e => e.CorAlerta).HasMaxLength(7).IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Laboratorio>(entity =>
+        {
+            entity.ToTable("Laboratorio");
+            entity.HasIndex(e => e.Codigo).IsUnique();
+            entity.Property(e => e.Codigo).HasMaxLength(20).IsUnicode(false);
+            entity.Property(e => e.Nome).HasMaxLength(255);
+            entity.Property(e => e.Sitio).HasMaxLength(100);
+            entity.Property(e => e.Responsavel).HasMaxLength(255);
+            entity.Property(e => e.Especialidade).HasMaxLength(50).IsUnicode(false);
+            entity.Property(e => e.Status).HasMaxLength(20).IsUnicode(false).HasDefaultValue("ATIVO");
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
+            entity.Property(e => e.DataAtualizacao).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ProtocoloContencao>(entity =>
+        {
+            entity.ToTable("ProtocoloContencao");
+            entity.HasIndex(e => e.Codigo).IsUnique();
+            entity.Property(e => e.Codigo).HasMaxLength(20).IsUnicode(false);
+            entity.Property(e => e.Titulo).HasMaxLength(255);
+            entity.Property(e => e.ClassesAplicaveis).HasMaxLength(100).IsUnicode(false);
+            entity.Property(e => e.DataCriacao).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
+            entity.Property(e => e.DataAtualizacao).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ProtocoloAplicadoEm>(entity =>
+        {
+            entity.HasKey(e => new { e.ProtocoloId, e.AnomaliaId });
+            entity.ToTable("Protocolo_AplicadoEm");
+            entity.Property(e => e.Status).HasMaxLength(20).IsUnicode(false).HasDefaultValue("ATIVO");
+            entity.Property(e => e.DataInicio).HasColumnType("datetime");
+            entity.Property(e => e.DataFim).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Anomalium).WithMany(p => p.ProtocoloAplicadoEms)
+                .HasForeignKey(d => d.AnomaliaId)
+                .HasConstraintName("FK_Protocolo_AplicadoEm_Anomalia");
+
+            entity.HasOne(d => d.ProtocoloContencao).WithMany(p => p.ProtocoloAplicadoEms)
+                .HasForeignKey(d => d.ProtocoloId)
+                .HasConstraintName("FK_Protocolo_AplicadoEm_Protocolo");
+        });
+
+        modelBuilder.Entity<NotificacaoAnomalia>(entity =>
+        {
+            entity.ToTable("NotificacaoAnomalia");
+            entity.HasIndex(e => e.Status, "IX_NotificacaoAnomalia_Status");
+            entity.HasIndex(e => e.DataHora, "IX_NotificacaoAnomalia_Data");
+            entity.Property(e => e.Titulo).HasMaxLength(255);
+            entity.Property(e => e.LocalIdentificado).HasMaxLength(255);
+            entity.Property(e => e.DataHora).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
+            entity.Property(e => e.Status).HasMaxLength(20).IsUnicode(false).HasDefaultValue("PENDENTE");
+            entity.Property(e => e.Relator).HasMaxLength(255);
+            entity.Property(e => e.DataResolucao).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Anomalium).WithMany(p => p.NotificacaoAnomalias)
+                .HasForeignKey(d => d.AnomaliaId)
+                .HasConstraintName("FK_NotificacaoAnomalia_Anomalia");
         });
 
         OnModelCreatingPartial(modelBuilder);

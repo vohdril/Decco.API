@@ -9,6 +9,8 @@ public class AnomaliaDto
     public string ClasseObjeto { get; set; } = string.Empty;
     public string CamadaOntologica { get; set; } = string.Empty;
     public string TipoMateria { get; set; } = string.Empty;
+    public string? CognicaoAparente { get; set; }
+    public string? Periculosidade { get; set; }
     public string MecanismoPrimario { get; set; } = string.Empty;
     public string? MecanismoSecundario { get; set; }
     public decimal? IEIA_D_Base { get; set; }

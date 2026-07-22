@@ -19,6 +19,10 @@ public partial class Anomalium
 
     public int TipoMateriaId { get; set; }
 
+    public int? CognicaoAparenteId { get; set; }
+
+    public int? PericulosidadeId { get; set; }
+
     public int MecanismoPrimarioId { get; set; }
 
     public int? MecanismoSecundarioId { get; set; }
@@ -51,9 +55,17 @@ public partial class Anomalium
 
     public virtual ICollection<Evento> Eventos { get; set; } = new List<Evento>();
 
+    public virtual CatCognicaoAparente? CognicaoAparente { get; set; }
+
+    public virtual CatPericulosidade? Periculosidade { get; set; }
+
     public virtual ICollection<Incidente> Incidentes { get; set; } = new List<Incidente>();
 
     public virtual ICollection<Localidade> Localidades { get; set; } = new List<Localidade>();
+
+    public virtual ICollection<NotificacaoAnomalia> NotificacaoAnomalias { get; set; } = new List<NotificacaoAnomalia>();
+
+    public virtual ICollection<ProtocoloAplicadoEm> ProtocoloAplicadoEms { get; set; } = new List<ProtocoloAplicadoEm>();
 
     public virtual CatMecanismoInteracao MecanismoPrimario { get; set; } = null!;
 
