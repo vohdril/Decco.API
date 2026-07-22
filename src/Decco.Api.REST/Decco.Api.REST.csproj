@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Decco.Api.Operations\Decco.Api.Operations.csproj" />
     <ProjectReference Include="..\Decco.Contracts\Decco.Contracts.csproj" />
+    <ProjectReference Include="..\Decco.Api.Root\Decco.Api.Root.csproj" />
   </ItemGroup>
 
 </Project>

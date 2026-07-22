@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Decco.Api.Common\Decco.Api.Common.csproj" />
+    <ProjectReference Include="..\Decco.Api.DataLayer\Decco.Api.DataLayer.csproj" />
+    <ProjectReference Include="..\Decco.Contracts\Decco.Contracts.csproj" />
+    <ProjectReference Include="..\Decco.Api.Contracts\Decco.Api.Contracts.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

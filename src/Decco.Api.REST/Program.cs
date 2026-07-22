@@ -1,6 +1,5 @@
 using Decco.Api.DataLayer;
-using Decco.Api.DataLayer.Repositories;
-using Decco.Api.Operations;
+using Decco.Api.Root;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,8 +24,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DeccoDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DeccoDb")));
 
-builder.Services.AddScoped<IAnomaliaRepository, AnomaliaRepository>();
-builder.Services.AddScoped<IAnomaliaManager, AnomaliaManager>();
+builder.Services.RegisterDependencies();
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Decco.Contracts\Decco.Contracts.csproj" />
+    <ProjectReference Include="..\Decco.Api.Common\Decco.Api.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
