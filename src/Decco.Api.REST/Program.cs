@@ -2,6 +2,10 @@ using Decco.Api.DataLayer;
 using Decco.Api.Root;
 using Microsoft.EntityFrameworkCore;
 
+/* PID handshake: grava o PID para o pré-build matar o processo anterior */
+var pidFile = Path.Combine(Path.GetTempPath(), ".decco-api-rest.pid");
+try { File.WriteAllText(pidFile, Environment.ProcessId.ToString()); } catch { }
+
 var builder = WebApplication.CreateBuilder(args);
 
 var corsPolicy = "DashboardOrigins";
@@ -39,3 +43,6 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.Run();
+
+/* Limpa o PID ao encerrar */
+try { if (File.Exists(pidFile)) File.Delete(pidFile); } catch { }

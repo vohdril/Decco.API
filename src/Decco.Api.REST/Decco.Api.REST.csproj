@@ -21,4 +21,7 @@
     <ProjectReference Include="..\Decco.Api.Root\Decco.Api.Root.csproj" />
   </ItemGroup>
 
+  <Target Name="KillPreviousInstance" BeforeTargets="CoreBuild">
+    <Exec Command="powershell -NoProfile -File &quot;$(MSBuildProjectDirectory)\kill-decco.ps1&quot;" IgnoreExitCode="true" />
+  </Target>
 </Project>
