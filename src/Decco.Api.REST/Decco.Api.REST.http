@@ -1,0 +1,6 @@
+@Decco.Api.REST_HostAddress = http://localhost:5291
+
+GET {{Decco.Api.REST_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D559B7FA-AE61-4804-B1A4-3A52E7DCDAF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decco.Api.REST", "src\Decco.Api.REST\Decco.Api.REST.csproj", "{ECC222B4-9FC1-4491-949E-405CAE75F3FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decco.Api.Operations", "src\Decco.Api.Operations\Decco.Api.Operations.csproj", "{01C43A7E-D258-47F1-B1FA-3C6C963A495D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decco.Contracts", "src\Decco.Contracts\Decco.Contracts.csproj", "{6F4CF487-A19F-444C-9E91-2643BAAE3F5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decco.Api.DataLayer", "src\Decco.Api.DataLayer\Decco.Api.DataLayer.csproj", "{33147AC7-A9AF-44A4-8889-9DE3F721A7C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ECC222B4-9FC1-4491-949E-405CAE75F3FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECC222B4-9FC1-4491-949E-405CAE75F3FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECC222B4-9FC1-4491-949E-405CAE75F3FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECC222B4-9FC1-4491-949E-405CAE75F3FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01C43A7E-D258-47F1-B1FA-3C6C963A495D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01C43A7E-D258-47F1-B1FA-3C6C963A495D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01C43A7E-D258-47F1-B1FA-3C6C963A495D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01C43A7E-D258-47F1-B1FA-3C6C963A495D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F4CF487-A19F-444C-9E91-2643BAAE3F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F4CF487-A19F-444C-9E91-2643BAAE3F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F4CF487-A19F-444C-9E91-2643BAAE3F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F4CF487-A19F-444C-9E91-2643BAAE3F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33147AC7-A9AF-44A4-8889-9DE3F721A7C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33147AC7-A9AF-44A4-8889-9DE3F721A7C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33147AC7-A9AF-44A4-8889-9DE3F721A7C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33147AC7-A9AF-44A4-8889-9DE3F721A7C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ECC222B4-9FC1-4491-949E-405CAE75F3FE} = {D559B7FA-AE61-4804-B1A4-3A52E7DCDAF5}
+		{01C43A7E-D258-47F1-B1FA-3C6C963A495D} = {D559B7FA-AE61-4804-B1A4-3A52E7DCDAF5}
+		{6F4CF487-A19F-444C-9E91-2643BAAE3F5C} = {D559B7FA-AE61-4804-B1A4-3A52E7DCDAF5}
+		{33147AC7-A9AF-44A4-8889-9DE3F721A7C5} = {D559B7FA-AE61-4804-B1A4-3A52E7DCDAF5}
+	EndGlobalSection
+EndGlobal
