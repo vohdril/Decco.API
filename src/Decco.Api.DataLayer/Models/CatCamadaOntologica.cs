@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class CatCamadaOntologica
+public partial class CatCamadaOntologica : IEntity
 {
     public int Id { get; set; }
 

@@ -1,4 +1,4 @@
-using Decco.Api.Contracts;
+using Decco.Api.Common;
 using Decco.Api.DataLayer.Repositories;
 using Decco.Api.DataLayer.Models;
 using Decco.Contracts;
@@ -22,9 +22,9 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<CatForcaFundamentalDto>> { Data = dtos };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<List<CatForcaFundamentalDto>>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<List<CatForcaFundamentalDto>>();
         }
     }
 
@@ -34,13 +34,13 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null)
-                return ErrorResponse<CatForcaFundamentalDto>(ErrorCodes.NotFound.GetCode(), ErrorCodes.NotFound.DefaultMessage);
+                return ErrorResponseHelper.NotFound<CatForcaFundamentalDto>();
 
             return new SingleResponse<CatForcaFundamentalDto> { Data = MapToDto(entity) };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<CatForcaFundamentalDto>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<CatForcaFundamentalDto>();
         }
     }
 
@@ -50,9 +50,9 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
         {
             return new SingleResponse<int> { Data = await _repo.InsertAsync(MapToEntity(dto)) };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<int>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<int>();
         }
     }
 
@@ -63,9 +63,9 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<bool>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<bool>();
         }
     }
 
@@ -76,9 +76,9 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<bool>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<bool>();
         }
     }
 
@@ -100,9 +100,4 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
         ParticulaPortadora = dto.ParticulaPortadora,
     };
 
-    private static SingleResponse<T> ErrorResponse<T>(string code, string message) => new()
-    {
-        Status = ResponseStatus.Fail,
-        Error = new ErrorInfo { Code = code, Message = message }
-    };
 }

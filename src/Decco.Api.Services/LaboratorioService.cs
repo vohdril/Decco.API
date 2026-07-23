@@ -1,3 +1,4 @@
+using Decco.Api.Common;
 using Decco.Api.Contracts;
 using Decco.Api.DataLayer.Models;
 using Decco.Api.DataLayer.Repositories;
@@ -22,7 +23,7 @@ public class LaboratorioService : ILaboratorioService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<LaboratorioDto>> { Data = dtos };
         }
-        catch (Exception ex) { return ErrorResponse<List<LaboratorioDto>>(ex); }
+        catch { return ErrorResponseHelper.Fail<List<LaboratorioDto>>(); }
     }
 
     public async Task<SingleResponse<LaboratorioDto>> Get(int id)
@@ -30,10 +31,10 @@ public class LaboratorioService : ILaboratorioService
         try
         {
             var entity = await _repo.GetByIdAsync(id);
-            if (entity == null) return ErrorResponse<LaboratorioDto>(ErrorCodes.NotFound.GetCode(), ErrorCodes.NotFound.DefaultMessage);
+            if (entity == null) return ErrorResponseHelper.NotFound<LaboratorioDto>();
             return new SingleResponse<LaboratorioDto> { Data = MapToDto(entity) };
         }
-        catch (Exception ex) { return ErrorResponse<LaboratorioDto>(ex); }
+        catch { return ErrorResponseHelper.Fail<LaboratorioDto>(); }
     }
 
     public async Task<SingleResponse<int>> Insert(LaboratorioDto dto)
@@ -43,7 +44,7 @@ public class LaboratorioService : ILaboratorioService
             var id = await _repo.InsertAsync(MapToEntity(dto));
             return new SingleResponse<int> { Data = id };
         }
-        catch (Exception ex) { return ErrorResponse<int>(ex); }
+        catch { return ErrorResponseHelper.Fail<int>(); }
     }
 
     public async Task<SingleResponse<bool>> Update(LaboratorioDto dto)
@@ -51,11 +52,11 @@ public class LaboratorioService : ILaboratorioService
         try
         {
             var existing = await _repo.GetByIdAsync(dto.Id);
-            if (existing == null) return ErrorResponse<bool>(ErrorCodes.NotFound.GetCode(), ErrorCodes.NotFound.DefaultMessage);
+            if (existing == null) return ErrorResponseHelper.NotFound<bool>();
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex) { return ErrorResponse<bool>(ex); }
+        catch { return ErrorResponseHelper.Fail<bool>(); }
     }
 
     public async Task<SingleResponse<bool>> Delete(int id)
@@ -63,11 +64,11 @@ public class LaboratorioService : ILaboratorioService
         try
         {
             var existing = await _repo.GetByIdAsync(id);
-            if (existing == null) return ErrorResponse<bool>(ErrorCodes.NotFound.GetCode(), ErrorCodes.NotFound.DefaultMessage);
+            if (existing == null) return ErrorResponseHelper.NotFound<bool>();
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex) { return ErrorResponse<bool>(ex); }
+        catch { return ErrorResponseHelper.Fail<bool>(); }
     }
 
     private static LaboratorioDto MapToDto(Laboratorio e) => new()
@@ -85,12 +86,4 @@ public class LaboratorioService : ILaboratorioService
         NivelAcessoMinimo = dto.NivelAcessoMinimo, Status = dto.Status
     };
 
-    private static SingleResponse<T> ErrorResponse<T>(string code, string message) => new()
-    {
-        Status = ResponseStatus.Fail,
-        Error = new ErrorInfo { Code = code, Message = message }
-    };
-
-    private static SingleResponse<T> ErrorResponse<T>(Exception ex) =>
-        ErrorResponse<T>(ErrorCodes.InternalError.GetCode(), ErrorCodes.InternalError.DefaultMessage);
 }

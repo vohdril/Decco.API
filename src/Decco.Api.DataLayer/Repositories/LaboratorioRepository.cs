@@ -17,12 +17,12 @@ public class LaboratorioRepository : ILaboratorioRepository
 
     public async Task<List<Laboratorio>> ListAsync()
     {
-        return await _ctx.Laboratorios.ToListAsync();
+        return await _ctx.Set<Laboratorio>().ToListAsync();
     }
 
     public async Task<Laboratorio?> GetByIdAsync(int id)
     {
-        return await _ctx.Laboratorios.FindAsync(id);
+        return await _ctx.Set<Laboratorio>().FindAsync(id);
     }
 
     public async Task<int> InsertAsync(Laboratorio laboratorio)
@@ -64,10 +64,10 @@ public class LaboratorioRepository : ILaboratorioRepository
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _ctx.Laboratorios.FindAsync(id);
+        var entity = await _ctx.Set<Laboratorio>().FindAsync(id);
         if (entity != null)
         {
-            _ctx.Laboratorios.Remove(entity);
+            _ctx.Set<Laboratorio>().Remove(entity);
             await _ctx.SaveChangesAsync();
         }
     }

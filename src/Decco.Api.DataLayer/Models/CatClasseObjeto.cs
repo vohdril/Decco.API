@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class CatClasseObjeto
+public partial class CatClasseObjeto : IEntity
 {
     public int Id { get; set; }
 

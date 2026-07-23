@@ -14,33 +14,33 @@ public class CatMecanismoInteracaoRepository : ICatMecanismoInteracaoRepository
 
     public async Task<List<CatMecanismoInteracao>> ListAsync()
     {
-        return await _context.CatMecanismoInteracaos.OrderBy(e => e.Nome).ToListAsync();
+        return await _context.Set<CatMecanismoInteracao>().OrderBy(e => e.Nome).ToListAsync();
     }
 
     public async Task<CatMecanismoInteracao?> GetByIdAsync(int id)
     {
-        return await _context.CatMecanismoInteracaos.FindAsync(id);
+        return await _context.Set<CatMecanismoInteracao>().FindAsync(id);
     }
 
     public async Task<int> InsertAsync(CatMecanismoInteracao entity)
     {
-        _context.CatMecanismoInteracaos.Add(entity);
+        _context.Set<CatMecanismoInteracao>().Add(entity);
         await _context.SaveChangesAsync();
         return entity.Id;
     }
 
     public async Task UpdateAsync(CatMecanismoInteracao entity)
     {
-        _context.CatMecanismoInteracaos.Update(entity);
+        _context.Set<CatMecanismoInteracao>().Update(entity);
         await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _context.CatMecanismoInteracaos.FindAsync(id);
+        var entity = await _context.Set<CatMecanismoInteracao>().FindAsync(id);
         if (entity != null)
         {
-            _context.CatMecanismoInteracaos.Remove(entity);
+            _context.Set<CatMecanismoInteracao>().Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

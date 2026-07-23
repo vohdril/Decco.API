@@ -2,7 +2,7 @@ using System;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class NotificacaoAnomalia
+public partial class NotificacaoAnomalia : IEntity
 {
     public int Id { get; set; }
     public string Titulo { get; set; } = null!;

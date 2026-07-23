@@ -1,4 +1,4 @@
-using Decco.Api.Contracts;
+using Decco.Api.Common;
 using Decco.Api.DataLayer.Repositories;
 using Decco.Api.DataLayer.Models;
 using Decco.Contracts;
@@ -22,9 +22,9 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<CatCognicaoAparenteDto>> { Data = dtos };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<List<CatCognicaoAparenteDto>>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<List<CatCognicaoAparenteDto>>();
         }
     }
 
@@ -34,13 +34,13 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null)
-                return ErrorResponse<CatCognicaoAparenteDto>(ErrorCodes.NotFound.GetCode(), ErrorCodes.NotFound.DefaultMessage);
+                return ErrorResponseHelper.NotFound<CatCognicaoAparenteDto>();
 
             return new SingleResponse<CatCognicaoAparenteDto> { Data = MapToDto(entity) };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<CatCognicaoAparenteDto>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<CatCognicaoAparenteDto>();
         }
     }
 
@@ -50,9 +50,9 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
         {
             return new SingleResponse<int> { Data = await _repo.InsertAsync(MapToEntity(dto)) };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<int>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<int>();
         }
     }
 
@@ -63,9 +63,9 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<bool>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<bool>();
         }
     }
 
@@ -76,9 +76,9 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<bool>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<bool>();
         }
     }
 
@@ -98,9 +98,4 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
         Descricao = dto.Descricao
     };
 
-    private static SingleResponse<T> ErrorResponse<T>(string code, string message) => new()
-    {
-        Status = ResponseStatus.Fail,
-        Error = new ErrorInfo { Code = code, Message = message }
-    };
 }

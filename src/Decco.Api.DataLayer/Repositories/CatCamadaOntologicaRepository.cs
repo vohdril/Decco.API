@@ -14,33 +14,33 @@ public class CatCamadaOntologicaRepository : ICatCamadaOntologicaRepository
 
     public async Task<List<CatCamadaOntologica>> ListAsync()
     {
-        return await _context.CatCamadaOntologicas.OrderBy(e => e.Nome).ToListAsync();
+        return await _context.Set<CatCamadaOntologica>().OrderBy(e => e.Nome).ToListAsync();
     }
 
     public async Task<CatCamadaOntologica?> GetByIdAsync(int id)
     {
-        return await _context.CatCamadaOntologicas.FindAsync(id);
+        return await _context.Set<CatCamadaOntologica>().FindAsync(id);
     }
 
     public async Task<int> InsertAsync(CatCamadaOntologica entity)
     {
-        _context.CatCamadaOntologicas.Add(entity);
+        _context.Set<CatCamadaOntologica>().Add(entity);
         await _context.SaveChangesAsync();
         return entity.Id;
     }
 
     public async Task UpdateAsync(CatCamadaOntologica entity)
     {
-        _context.CatCamadaOntologicas.Update(entity);
+        _context.Set<CatCamadaOntologica>().Update(entity);
         await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _context.CatCamadaOntologicas.FindAsync(id);
+        var entity = await _context.Set<CatCamadaOntologica>().FindAsync(id);
         if (entity != null)
         {
-            _context.CatCamadaOntologicas.Remove(entity);
+            _context.Set<CatCamadaOntologica>().Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

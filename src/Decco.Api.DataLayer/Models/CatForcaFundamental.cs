@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class CatForcaFundamental
+public partial class CatForcaFundamental : IEntity
 {
     public int Id { get; set; }
 

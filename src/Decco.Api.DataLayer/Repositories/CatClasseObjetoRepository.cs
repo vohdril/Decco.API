@@ -14,33 +14,33 @@ public class CatClasseObjetoRepository : ICatClasseObjetoRepository
 
     public async Task<List<CatClasseObjeto>> ListAsync()
     {
-        return await _context.CatClasseObjetos.OrderBy(e => e.Nome).ToListAsync();
+        return await _context.Set<CatClasseObjeto>().OrderBy(e => e.Nome).ToListAsync();
     }
 
     public async Task<CatClasseObjeto?> GetByIdAsync(int id)
     {
-        return await _context.CatClasseObjetos.FindAsync(id);
+        return await _context.Set<CatClasseObjeto>().FindAsync(id);
     }
 
     public async Task<int> InsertAsync(CatClasseObjeto entity)
     {
-        _context.CatClasseObjetos.Add(entity);
+        _context.Set<CatClasseObjeto>().Add(entity);
         await _context.SaveChangesAsync();
         return entity.Id;
     }
 
     public async Task UpdateAsync(CatClasseObjeto entity)
     {
-        _context.CatClasseObjetos.Update(entity);
+        _context.Set<CatClasseObjeto>().Update(entity);
         await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _context.CatClasseObjetos.FindAsync(id);
+        var entity = await _context.Set<CatClasseObjeto>().FindAsync(id);
         if (entity != null)
         {
-            _context.CatClasseObjetos.Remove(entity);
+            _context.Set<CatClasseObjeto>().Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

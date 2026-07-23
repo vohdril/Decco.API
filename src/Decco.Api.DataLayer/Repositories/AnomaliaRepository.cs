@@ -17,7 +17,7 @@ public class AnomaliaRepository : IAnomaliaRepository
 
     public async Task<List<Anomalium>> ListAsync()
     {
-        return await _ctx.Anomalia
+        return await _ctx.Set<Anomalium>()
             .Include(a => a.ClasseObjeto)
             .Include(a => a.CamadaOntologica)
             .Include(a => a.TipoMateria)
@@ -28,7 +28,7 @@ public class AnomaliaRepository : IAnomaliaRepository
 
     public async Task<Anomalium?> GetByIdAsync(int id)
     {
-        return await _ctx.Anomalia
+        return await _ctx.Set<Anomalium>()
             .Include(a => a.ClasseObjeto)
             .Include(a => a.CamadaOntologica)
             .Include(a => a.TipoMateria)
@@ -85,10 +85,10 @@ public class AnomaliaRepository : IAnomaliaRepository
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _ctx.Anomalia.FindAsync(id);
+        var entity = await _ctx.Set<Anomalium>().FindAsync(id);
         if (entity != null)
         {
-            _ctx.Anomalia.Remove(entity);
+            _ctx.Set<Anomalium>().Remove(entity);
             await _ctx.SaveChangesAsync();
         }
     }

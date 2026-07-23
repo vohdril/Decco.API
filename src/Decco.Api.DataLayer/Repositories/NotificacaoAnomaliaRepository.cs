@@ -16,12 +16,12 @@ public class NotificacaoAnomaliaRepository : INotificacaoAnomaliaRepository
 
     public async Task<List<NotificacaoAnomalia>> ListAsync()
     {
-        return await _ctx.NotificacaoAnomalias.ToListAsync();
+        return await _ctx.Set<NotificacaoAnomalia>().ToListAsync();
     }
 
     public async Task<NotificacaoAnomalia?> GetByIdAsync(int id)
     {
-        return await _ctx.NotificacaoAnomalias.FirstOrDefaultAsync(n => n.Id == id);
+        return await _ctx.Set<NotificacaoAnomalia>().FirstOrDefaultAsync(n => n.Id == id);
     }
 
     public async Task<int> InsertAsync(NotificacaoAnomalia notificacao)
@@ -61,10 +61,10 @@ public class NotificacaoAnomaliaRepository : INotificacaoAnomaliaRepository
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _ctx.NotificacaoAnomalias.FindAsync(id);
+        var entity = await _ctx.Set<NotificacaoAnomalia>().FindAsync(id);
         if (entity != null)
         {
-            _ctx.NotificacaoAnomalias.Remove(entity);
+            _ctx.Set<NotificacaoAnomalia>().Remove(entity);
             await _ctx.SaveChangesAsync();
         }
     }

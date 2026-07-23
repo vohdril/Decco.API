@@ -14,33 +14,33 @@ public class CatTipoMateriumRepository : ICatTipoMateriumRepository
 
     public async Task<List<CatTipoMaterium>> ListAsync()
     {
-        return await _context.CatTipoMateria.OrderBy(e => e.Nome).ToListAsync();
+        return await _context.Set<CatTipoMaterium>().OrderBy(e => e.Nome).ToListAsync();
     }
 
     public async Task<CatTipoMaterium?> GetByIdAsync(int id)
     {
-        return await _context.CatTipoMateria.FindAsync(id);
+        return await _context.Set<CatTipoMaterium>().FindAsync(id);
     }
 
     public async Task<int> InsertAsync(CatTipoMaterium entity)
     {
-        _context.CatTipoMateria.Add(entity);
+        _context.Set<CatTipoMaterium>().Add(entity);
         await _context.SaveChangesAsync();
         return entity.Id;
     }
 
     public async Task UpdateAsync(CatTipoMaterium entity)
     {
-        _context.CatTipoMateria.Update(entity);
+        _context.Set<CatTipoMaterium>().Update(entity);
         await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _context.CatTipoMateria.FindAsync(id);
+        var entity = await _context.Set<CatTipoMaterium>().FindAsync(id);
         if (entity != null)
         {
-            _context.CatTipoMateria.Remove(entity);
+            _context.Set<CatTipoMaterium>().Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

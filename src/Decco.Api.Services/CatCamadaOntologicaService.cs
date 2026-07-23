@@ -1,4 +1,4 @@
-using Decco.Api.Contracts;
+using Decco.Api.Common;
 using Decco.Api.DataLayer.Repositories;
 using Decco.Api.DataLayer.Models;
 using Decco.Contracts;
@@ -22,9 +22,9 @@ public class CatCamadaOntologicaService : ICatCamadaOntologicaService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<CatCamadaOntologicaDto>> { Data = dtos };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<List<CatCamadaOntologicaDto>>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<List<CatCamadaOntologicaDto>>();
         }
     }
 
@@ -34,13 +34,13 @@ public class CatCamadaOntologicaService : ICatCamadaOntologicaService
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null)
-                return ErrorResponse<CatCamadaOntologicaDto>(ErrorCodes.NotFound.GetCode(), ErrorCodes.NotFound.DefaultMessage);
+                return ErrorResponseHelper.NotFound<CatCamadaOntologicaDto>();
 
             return new SingleResponse<CatCamadaOntologicaDto> { Data = MapToDto(entity) };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<CatCamadaOntologicaDto>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<CatCamadaOntologicaDto>();
         }
     }
 
@@ -50,9 +50,9 @@ public class CatCamadaOntologicaService : ICatCamadaOntologicaService
         {
             return new SingleResponse<int> { Data = await _repo.InsertAsync(MapToEntity(dto)) };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<int>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<int>();
         }
     }
 
@@ -63,9 +63,9 @@ public class CatCamadaOntologicaService : ICatCamadaOntologicaService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<bool>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<bool>();
         }
     }
 
@@ -76,9 +76,9 @@ public class CatCamadaOntologicaService : ICatCamadaOntologicaService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex)
+        catch
         {
-            return ErrorResponse<bool>(ErrorCodes.InternalError.GetCode(), ex.Message);
+            return ErrorResponseHelper.Fail<bool>();
         }
     }
 
@@ -102,9 +102,4 @@ public class CatCamadaOntologicaService : ICatCamadaOntologicaService
         Prioridade = dto.Prioridade
     };
 
-    private static SingleResponse<T> ErrorResponse<T>(string code, string message) => new()
-    {
-        Status = ResponseStatus.Fail,
-        Error = new ErrorInfo { Code = code, Message = message }
-    };
 }

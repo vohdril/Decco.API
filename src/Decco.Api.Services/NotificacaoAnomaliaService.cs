@@ -1,3 +1,4 @@
+using Decco.Api.Common;
 using Decco.Api.Contracts;
 using Decco.Api.DataLayer.Models;
 using Decco.Api.DataLayer.Repositories;
@@ -22,7 +23,7 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<NotificacaoAnomaliaDto>> { Data = dtos };
         }
-        catch (Exception ex) { return ErrorResponse<List<NotificacaoAnomaliaDto>>(ex); }
+        catch { return ErrorResponseHelper.Fail<List<NotificacaoAnomaliaDto>>(); }
     }
 
     public async Task<SingleResponse<NotificacaoAnomaliaDto>> Get(int id)
@@ -30,10 +31,10 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
         try
         {
             var entity = await _repo.GetByIdAsync(id);
-            if (entity == null) return ErrorResponse<NotificacaoAnomaliaDto>(ErrorCodes.NotFound.GetCode(), ErrorCodes.NotFound.DefaultMessage);
+            if (entity == null) return ErrorResponseHelper.NotFound<NotificacaoAnomaliaDto>();
             return new SingleResponse<NotificacaoAnomaliaDto> { Data = MapToDto(entity) };
         }
-        catch (Exception ex) { return ErrorResponse<NotificacaoAnomaliaDto>(ex); }
+        catch { return ErrorResponseHelper.Fail<NotificacaoAnomaliaDto>(); }
     }
 
     public async Task<SingleResponse<int>> Insert(NotificacaoAnomaliaDto dto)
@@ -43,7 +44,7 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
             var id = await _repo.InsertAsync(MapToEntity(dto));
             return new SingleResponse<int> { Data = id };
         }
-        catch (Exception ex) { return ErrorResponse<int>(ex); }
+        catch { return ErrorResponseHelper.Fail<int>(); }
     }
 
     public async Task<SingleResponse<bool>> Update(NotificacaoAnomaliaDto dto)
@@ -51,11 +52,11 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
         try
         {
             var existing = await _repo.GetByIdAsync(dto.Id);
-            if (existing == null) return ErrorResponse<bool>(ErrorCodes.NotFound.GetCode(), ErrorCodes.NotFound.DefaultMessage);
+            if (existing == null) return ErrorResponseHelper.NotFound<bool>();
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex) { return ErrorResponse<bool>(ex); }
+        catch { return ErrorResponseHelper.Fail<bool>(); }
     }
 
     public async Task<SingleResponse<bool>> Delete(int id)
@@ -63,11 +64,11 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
         try
         {
             var existing = await _repo.GetByIdAsync(id);
-            if (existing == null) return ErrorResponse<bool>(ErrorCodes.NotFound.GetCode(), ErrorCodes.NotFound.DefaultMessage);
+            if (existing == null) return ErrorResponseHelper.NotFound<bool>();
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex) { return ErrorResponse<bool>(ex); }
+        catch { return ErrorResponseHelper.Fail<bool>(); }
     }
 
     private static NotificacaoAnomaliaDto MapToDto(NotificacaoAnomalia e) => new()
@@ -85,12 +86,4 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
         NivelPrioridade = dto.NivelPrioridade, Relator = dto.Relator, AnomaliaId = dto.AnomaliaId
     };
 
-    private static SingleResponse<T> ErrorResponse<T>(string code, string message) => new()
-    {
-        Status = ResponseStatus.Fail,
-        Error = new ErrorInfo { Code = code, Message = message }
-    };
-
-    private static SingleResponse<T> ErrorResponse<T>(Exception ex) =>
-        ErrorResponse<T>(ErrorCodes.InternalError.GetCode(), ErrorCodes.InternalError.DefaultMessage);
 }

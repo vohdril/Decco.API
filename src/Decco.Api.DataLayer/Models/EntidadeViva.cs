@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class EntidadeViva
+public partial class EntidadeViva : IEntity
 {
     public int Id { get; set; }
 

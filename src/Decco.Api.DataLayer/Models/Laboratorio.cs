@@ -2,7 +2,7 @@ using System;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class Laboratorio
+public partial class Laboratorio : IEntity
 {
     public int Id { get; set; }
     public string Codigo { get; set; } = null!;

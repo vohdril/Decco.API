@@ -2,7 +2,7 @@ using System;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class ProtocoloAplicadoEm
+public partial class ProtocoloAplicadoEm : IEntity
 {
     public int ProtocoloId { get; set; }
     public int AnomaliaId { get; set; }

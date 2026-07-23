@@ -14,33 +14,33 @@ public class CatForcaFundamentalRepository : ICatForcaFundamentalRepository
 
     public async Task<List<CatForcaFundamental>> ListAsync()
     {
-        return await _context.CatForcaFundamentals.OrderBy(e => e.Nome).ToListAsync();
+        return await _context.Set<CatForcaFundamental>().OrderBy(e => e.Nome).ToListAsync();
     }
 
     public async Task<CatForcaFundamental?> GetByIdAsync(int id)
     {
-        return await _context.CatForcaFundamentals.FindAsync(id);
+        return await _context.Set<CatForcaFundamental>().FindAsync(id);
     }
 
     public async Task<int> InsertAsync(CatForcaFundamental entity)
     {
-        _context.CatForcaFundamentals.Add(entity);
+        _context.Set<CatForcaFundamental>().Add(entity);
         await _context.SaveChangesAsync();
         return entity.Id;
     }
 
     public async Task UpdateAsync(CatForcaFundamental entity)
     {
-        _context.CatForcaFundamentals.Update(entity);
+        _context.Set<CatForcaFundamental>().Update(entity);
         await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _context.CatForcaFundamentals.FindAsync(id);
+        var entity = await _context.Set<CatForcaFundamental>().FindAsync(id);
         if (entity != null)
         {
-            _context.CatForcaFundamentals.Remove(entity);
+            _context.Set<CatForcaFundamental>().Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

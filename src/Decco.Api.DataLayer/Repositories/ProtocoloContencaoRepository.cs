@@ -17,12 +17,12 @@ public class ProtocoloContencaoRepository : IProtocoloContencaoRepository
 
     public async Task<List<ProtocoloContencao>> ListAsync()
     {
-        return await _ctx.ProtocoloContencaos.ToListAsync();
+        return await _ctx.Set<ProtocoloContencao>().ToListAsync();
     }
 
     public async Task<ProtocoloContencao?> GetByIdAsync(int id)
     {
-        return await _ctx.ProtocoloContencaos
+        return await _ctx.Set<ProtocoloContencao>()
             .Include(p => p.ProtocoloAplicadoEms)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
@@ -65,10 +65,10 @@ public class ProtocoloContencaoRepository : IProtocoloContencaoRepository
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _ctx.ProtocoloContencaos.FindAsync(id);
+        var entity = await _ctx.Set<ProtocoloContencao>().FindAsync(id);
         if (entity != null)
         {
-            _ctx.ProtocoloContencaos.Remove(entity);
+            _ctx.Set<ProtocoloContencao>().Remove(entity);
             await _ctx.SaveChangesAsync();
         }
     }

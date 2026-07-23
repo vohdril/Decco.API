@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class CatPericulosidade
+public partial class CatPericulosidade : IEntity
 {
     public int Id { get; set; }
     public int Nivel { get; set; }

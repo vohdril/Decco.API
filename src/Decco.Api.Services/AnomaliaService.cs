@@ -1,3 +1,4 @@
+using Decco.Api.Common;
 using Decco.Api.Contracts;
 using Decco.Api.DataLayer.Models;
 using Decco.Api.DataLayer.Repositories;
@@ -14,31 +15,23 @@ public class AnomaliaService : IAnomaliaService
         _repo = repo;
     }
 
-    public async Task<SingleResponse<AnomaliaDto>> GetAnomalia(int id)
+    public async Task<SingleResponse<AnomaliaDto>> Get(int id)
     {
         try
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null)
-                return new SingleResponse<AnomaliaDto>
-                {
-                    Status = ResponseStatus.Fail,
-                    Error = new ErrorInfo { Code = ErrorCodes.NotFound.GetCode(), Message = ErrorCodes.NotFound.DefaultMessage }
-                };
+                return ErrorResponseHelper.NotFound<AnomaliaDto>();
 
             return new SingleResponse<AnomaliaDto> { Data = MapToDto(entity) };
         }
-        catch (Exception ex)
+        catch
         {
-            return new SingleResponse<AnomaliaDto>
-            {
-                Status = ResponseStatus.Fail,
-                Error = new ErrorInfo { Code = ErrorCodes.InternalError.GetCode(), Message = ErrorCodes.InternalError.DefaultMessage }
-            };
+            return ErrorResponseHelper.Fail<AnomaliaDto>();
         }
     }
 
-    public async Task<PagedResponse<AnomaliaDto>> ListAnomalias(int page = 0, int pageSize = 50)
+    public async Task<PagedResponse<AnomaliaDto>> List(int page = 0, int pageSize = 50)
     {
         try
         {
@@ -54,7 +47,7 @@ public class AnomaliaService : IAnomaliaService
                 TotalRecords = total
             };
         }
-        catch (Exception ex)
+        catch
         {
             return new PagedResponse<AnomaliaDto>
             {
@@ -64,7 +57,7 @@ public class AnomaliaService : IAnomaliaService
         }
     }
 
-    public async Task<SingleResponse<int>> InsertAnomalia(AnomaliaDto dto)
+    public async Task<SingleResponse<int>> Insert(AnomaliaDto dto)
     {
         try
         {
@@ -72,63 +65,43 @@ public class AnomaliaService : IAnomaliaService
             var id = await _repo.InsertAsync(entity);
             return new SingleResponse<int> { Data = id };
         }
-        catch (Exception ex)
+        catch
         {
-            return new SingleResponse<int>
-            {
-                Status = ResponseStatus.Fail,
-                Error = new ErrorInfo { Code = ErrorCodes.InternalError.GetCode(), Message = ErrorCodes.InternalError.DefaultMessage }
-            };
+            return ErrorResponseHelper.Fail<int>();
         }
     }
 
-    public async Task<SingleResponse<bool>> UpdateAnomalia(AnomaliaDto dto)
+    public async Task<SingleResponse<bool>> Update(AnomaliaDto dto)
     {
         try
         {
             var existing = await _repo.GetByIdAsync(dto.Id);
             if (existing == null)
-                return new SingleResponse<bool>
-                {
-                    Status = ResponseStatus.Fail,
-                    Error = new ErrorInfo { Code = ErrorCodes.NotFound.GetCode(), Message = ErrorCodes.NotFound.DefaultMessage }
-                };
+                return ErrorResponseHelper.NotFound<bool>();
 
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex)
+        catch
         {
-            return new SingleResponse<bool>
-            {
-                Status = ResponseStatus.Fail,
-                Error = new ErrorInfo { Code = ErrorCodes.InternalError.GetCode(), Message = ErrorCodes.InternalError.DefaultMessage }
-            };
+            return ErrorResponseHelper.Fail<bool>();
         }
     }
 
-    public async Task<SingleResponse<bool>> DeleteAnomalia(int id)
+    public async Task<SingleResponse<bool>> Delete(int id)
     {
         try
         {
             var existing = await _repo.GetByIdAsync(id);
             if (existing == null)
-                return new SingleResponse<bool>
-                {
-                    Status = ResponseStatus.Fail,
-                    Error = new ErrorInfo { Code = ErrorCodes.NotFound.GetCode(), Message = ErrorCodes.NotFound.DefaultMessage }
-                };
+                return ErrorResponseHelper.NotFound<bool>();
 
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch (Exception ex)
+        catch
         {
-            return new SingleResponse<bool>
-            {
-                Status = ResponseStatus.Fail,
-                Error = new ErrorInfo { Code = ErrorCodes.InternalError.GetCode(), Message = ErrorCodes.InternalError.DefaultMessage }
-            };
+            return ErrorResponseHelper.Fail<bool>();
         }
     }
 

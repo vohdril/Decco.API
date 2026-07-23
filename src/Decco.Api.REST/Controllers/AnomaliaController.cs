@@ -15,33 +15,33 @@ public class AnomaliaController : ControllerBase
         _service = service;
     }
 
-    [HttpPost("ListAnomalias")]
+    [HttpPost("List")]
     public async Task<PagedResponse<AnomaliaDto>> List([FromBody] RequestBase<object> request)
     {
-        return await _service.ListAnomalias();
+        return await _service.List();
     }
 
-    [HttpPost("GetAnomalia")]
+    [HttpPost("Get")]
     public async Task<SingleResponse<AnomaliaDto>> Get([FromBody] RequestBase<int> request)
     {
-        return await _service.GetAnomalia(request.Data);
+        return await _service.Get(request.Data);
     }
 
-    [HttpPost("InsertAnomalia")]
+    [HttpPost("Insert")]
     public async Task<SingleResponse<int>> Insert([FromBody] RequestBase<AnomaliaDto> request)
     {
-        return await _service.InsertAnomalia(request.Data);
+        return await _service.Insert(request.Data);
     }
 
-    [HttpPost("UpdateAnomalia")]
+    [HttpPost("Update")]
     public async Task<SingleResponse<bool>> Update([FromBody] RequestBase<AnomaliaDto> request)
     {
-        return await _service.UpdateAnomalia(request.Data);
+        return await _service.Update(request.Data);
     }
 
-    [HttpPost("DeleteAnomalia")]
+    [HttpPost("Delete")]
     public async Task<SingleResponse<bool>> Delete([FromBody] RequestBase<int> request)
     {
-        return await _service.DeleteAnomalia(request.Data);
+        return await _service.Delete(request.Data);
     }
 }
