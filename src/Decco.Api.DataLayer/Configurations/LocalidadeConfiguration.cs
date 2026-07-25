@@ -17,6 +17,8 @@ public class LocalidadeConfiguration : IEntityTypeConfiguration<Localidade>
         builder.Property(e => e.ClimaAnomalo)
             .HasMaxLength(100)
             .IsUnicode(false);
+        builder.Property(e => e.Coordenadas)
+            .HasColumnType("geography");
         builder.Property(e => e.IeiaDAmbiente)
             .HasColumnType("decimal(8, 4)")
             .HasColumnName("IEIA_D_Ambiente");

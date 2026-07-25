@@ -11,6 +11,8 @@ public partial class Localidade : IEntity
 
     public string Nome { get; set; } = null!;
 
+    public string? Coordenadas { get; set; }
+
     public int? RaioEfeitoMetros { get; set; }
 
     public decimal? IeiaDAmbiente { get; set; }
