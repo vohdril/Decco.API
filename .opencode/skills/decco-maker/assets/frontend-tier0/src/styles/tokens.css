@@ -1,0 +1,59 @@
+/* =========================================================================
+   Decco Design System — tokens (estética HUD DeCCO)
+   Referências: fundo navy quase-preto, acento ciano/teal, núcleo âmbar,
+   severidade pela CorAlerta das classes de anomalia.
+   Trocar estes valores re-tematiza TODA a UI (single source of truth).
+   ========================================================================= */
+:root {
+  /* superfícies */
+  --bg-0: #060b12;          /* fundo base */
+  --bg-1: #0a121c;          /* painel */
+  --bg-2: #0e1826;          /* painel elevado / hover */
+  --bg-3: #12202f;          /* inputs / linhas */
+  --grid: rgba(56, 189, 214, 0.06);
+
+  /* acento primário (ciano/teal DeCCO) */
+  --accent: #34d3e6;
+  --accent-strong: #6ff0ff;
+  --accent-dim: rgba(52, 211, 230, 0.45);
+  --accent-glow: rgba(52, 211, 230, 0.25);
+
+  /* núcleo/reator (âmbar) */
+  --core: #ffb347;
+  --core-glow: rgba(255, 179, 71, 0.35);
+
+  /* texto */
+  --text-0: #dcefff;        /* títulos */
+  --text-1: #9db6cc;        /* corpo */
+  --text-2: #5f7893;        /* labels / muted */
+  --text-3: #3b526b;        /* desabilitado */
+
+  /* bordas */
+  --border: rgba(90, 140, 175, 0.18);
+  --border-strong: rgba(52, 211, 230, 0.35);
+
+  /* severidade (CorAlerta do DeccoDB) */
+  --sev-pacato: #4caf50;    /* SAFE */
+  --sev-yaguara: #ffc107;   /* EUCLID */
+  --sev-abaporu: #f44336;   /* KETER */
+  --sev-ukar: #9c27b0;      /* THAUMIEL */
+
+  /* status */
+  --ok: #4caf50;
+  --warn: #ffc107;
+  --danger: #f44336;
+
+  /* tipografia */
+  --font-mono: "JetBrains Mono", "Cascadia Code", "SF Mono", "Consolas", ui-monospace, monospace;
+  --font-sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  /* raio / espaço */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --space: 8px;
+
+  /* sombra / brilho */
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+  --focus-ring: 0 0 0 2px var(--bg-0), 0 0 0 4px var(--accent-dim);
+}

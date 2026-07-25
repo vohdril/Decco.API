@@ -1,0 +1,26 @@
+/* =========================================================================
+   USER OVERRIDES — alterações manuais feitas pelo usuário diretamente no
+   front (testes no navegador) e capturadas aqui. Separado dos estilos do
+   agente (components.css, global.css) para isolamento.
+
+   Regras:
+   - Cada bloco comentado com o teste que originou a alteração
+   - !important usado somente onde o componente aplica inline style
+   - Se algo quebrar, descomente/remova blocos individualmente
+   ========================================================================= */
+
+/* ---- Sidebar inicia expandida (setCollapsed(false)) ---- */
+/* Alterado em AppShell.tsx linha 29 */
+
+/* ---- Nav container sem margem direita ---- */
+.shell__nav {
+  margin-right: 0;
+}
+
+/* ---- Nav items expandidos: margem esquerda para respiro da borda ativa ---- */
+/* Teste manual: margin-left: 4px no Dashboard ativo para a linha ::before */
+/* não ficar colada na borda. Só quando expandido (sidebar ≥ 200px).        */
+.shell__side--expanded .shell__nav .nav-item {
+  margin-left: 4px;
+  width: calc(100% - 16px); /* (100% - 12px) - 4px margin */
+}

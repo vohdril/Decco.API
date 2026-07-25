@@ -1,0 +1,69 @@
+.dashboard { display: flex; flex-direction: column; gap: 24px; }
+.hero { display: flex; gap: 28px; align-items: flex-start; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 24px; }
+.hero-robot { flex-shrink: 0; width: 162px; }
+.hero-robot svg { width: 100%; height: auto; filter: drop-shadow(0 0 12px var(--accent-glow)); }
+.hero-text { flex: 1; }
+.hero-title { color: var(--text-0); font-family: var(--font-mono); font-size: 20px; letter-spacing: 0.12em; margin: 0 0 4px; }
+.hero-subtitle { color: var(--accent); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 14px; }
+.hero-desc { color: var(--text-1); font-size: 13px; line-height: 1.7; margin: 0; max-width: 520px; }
+/* ---- Progress Summary Card ---- */
+.progress-section { margin-top: 4px; }
+.progress-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 20px; }
+.progress-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.progress-icon { font-size: 20px; }
+.progress-title { font-family: var(--font-mono); font-size: 14px; color: var(--text-0); letter-spacing: .08em; flex: 1; font-weight: 600; }
+.progress-badge { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; color: var(--accent); background: var(--accent-glow); border: 1px solid var(--accent-dim); border-radius: 999px; padding: 2px 10px; }
+.progress-summary { color: var(--text-1); font-size: 13px; line-height: 1.7; margin: 0 0 16px; max-width: 720px; }
+.progress-foot { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--border); }
+.progress-foot-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-2); letter-spacing: .06em; }
+.progress-bar-track { flex: 1; min-width: 60px; height: 6px; background: var(--bg-3); border-radius: 6px; overflow: hidden; }
+.progress-bar-fill { display: block; height: 100%; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); border-radius: 6px; }
+
+/* ---- Kanban (3 colunas de roadmap) ---- */
+.kanban { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 8px; }
+.kanban-col { background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; display: flex; flex-direction: column; }
+.kanban-col__header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.kanban-col__icon { font-size: 18px; }
+.kanban-col__label { font-family: var(--font-mono); font-size: 13px; color: var(--text-0); letter-spacing: .08em; flex: 1; font-weight: 600; }
+.kanban-col__badge { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; color: var(--accent); background: var(--accent-glow); border: 1px solid var(--accent-dim); border-radius: 999px; padding: 2px 10px; }
+.kanban-col__body { padding: 12px 16px 16px; flex: 1; }
+.kanban-col .roadmap__node { padding-left: 24px; }
+.kanban-col .roadmap__line { left: 11px; }
+.kanban-col .roadmap__content { padding: 10px; margin-bottom: 8px; }
+.kanban-col .roadmap__label { font-size: 12px; }
+.kanban-col .roadmap__desc { font-size: 11px; }
+.kanban-col .roadmap__unlock-item { font-size: 11px; }
+
+/* ---- Loading Sync (conectando) ---- */
+.load-sync { display: flex; align-items: center; justify-content: center; min-height: 420px; }
+
+/* ---- Error Sync (API falhou) ---- */
+.error-sync {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  min-height: 420px;
+}
+.error-svg { width: 210px; flex-shrink: 0; }
+.error-svg svg { width: 100%; height: auto; filter: drop-shadow(0 0 12px var(--accent-glow)); }
+.error-text { display: flex; flex-direction: column; gap: 8px; }
+.error-title { font-family: var(--font-mono); font-size: 18px; color: var(--text-0); letter-spacing: 0.1em; margin: 0; }
+.error-msg { font-family: var(--font-mono); font-size: 13px; color: var(--text-2); margin: 0; letter-spacing: 0.04em; }
+
+/* ---- Tier Modal (explicação + código hello world) ---- */
+.tier-modal-body { display: flex; flex-direction: column; gap: 16px; }
+.tier-modal-intro { color: var(--text-1); font-size: 13px; line-height: 1.7; margin: 0; }
+.tier-modal-code {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 16px;
+  overflow-x: auto;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-0);
+  tab-size: 2;
+}
