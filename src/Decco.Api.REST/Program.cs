@@ -1,6 +1,7 @@
 using Decco.Api.DataLayer;
 using Decco.Api.Root;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 /* PID handshake: grava o PID para o pré-build matar o processo anterior */
 var pidFile = Path.Combine(Path.GetTempPath(), ".decco-api-rest.pid");
@@ -41,6 +42,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+
+/* static files: MF2 remote (decco-demo) */
+var mfRemotePath = Path.Combine(app.Environment.ContentRootPath, "..", "..", "mf-remote", "dist");
+if (Directory.Exists(mfRemotePath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(mfRemotePath),
+        RequestPath = "/mf-remote",
+    });
+}
 
 app.Run();
 

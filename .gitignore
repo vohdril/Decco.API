@@ -13,6 +13,11 @@ obj/
 .idea/
 *.swp
 
+## Node
+node_modules/
+mf-remote/node_modules/
+mf-remote/dist/
+
 ## OS
 Thumbs.db
 .DS_Store
