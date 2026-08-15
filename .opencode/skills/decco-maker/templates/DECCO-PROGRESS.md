@@ -2,21 +2,25 @@
 
 > **O que é:** o estado DECLARADO do progresso deste repositório Decco, por **track** e **Tier**. Fica **aqui, no projeto**
 > (versionado no git) — a skill `decco-maker` **nunca** guarda estado.
-> **Como a skill usa:** ao rodar um diagnóstico (`recipes/05`), ela cruza este arquivo (declarado) com o **código** (observado) e
-> **o observado vence** — divergências viram avisos, nunca erros.
+> **Como a skill usa:** a cada invocação ela roda a **validação em background** (`reference/20` §Parte 1: git status/log/tag +
+> diff × rubrica) e cruza o resultado com este arquivo (declarado) — **o observado (código/diff) vence**; divergências viram
+> avisos, nunca erros. O trio **anterior → atual → próximo** de cada track é derivado daqui + dos diffs.
 > **Como atualizar:** marque `[x]` ao **fechar E verificar** um checkpoint (ou peça: *"atualize o progresso"*). Ajuste também o
 > bloco `yaml` de resumo e a data. Os `[ ]` que sobram são o mapa do que falta, na ordem sugerida (workflow não-destrutivo).
 > **Ids** dos itens = conceitos-checkpoint da rubrica `reference/17` §2 (o diagnóstico usa os mesmos nomes).
+> **Backlog:** achados de tecnologia não contemplada no roadmap e refatorações `[FEEDBACK]` ficam no **`DECCO-BACKLOG.md`**
+> (raiz do projeto) — não aqui.
 
 ```yaml
-decco_progress: v1
+decco_progress: v2
 updated: AAAA-MM-DD
 # tier: número do Tier em foco | status: nao-iniciado | em-andamento | completo
+# (v2: a skill deriva também o trio anterior/atual/proximo por track via reference/20)
 tracks:
   back_moderno: { tier: null, status: nao-iniciado }   # Tier 0|1|2
   back_legado:  { tier: null, status: nao-iniciado }   # Tier 0|1|2
   front:        { tier: null, status: nao-iniciado }   # FE 0..4
-  auth:         { fase: null, status: nao-iniciado }   # opt-in: 2.0|2.1|2.2
+  auth:         { fase: null, status: nao-iniciado }   # opt-in: 1.0|1.1|1.2
   db:           { tier: null, status: nao-iniciado }   # DB0..4
 ```
 

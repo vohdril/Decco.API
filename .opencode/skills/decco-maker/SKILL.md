@@ -1,7 +1,7 @@
 ---
 name: decco-maker
-version: 10
-description: Skill DIDÁTICA de análise e geração de código do sandbox "Decco": APIs .NET que espelham a arquitetura Omnibees sobre o DeccoDB (catálogo fictício de anomalias). Tier-0 = dois repositórios reais taggeados como modelo-template (Decco.API + Decco.Dashboard com micro-frontend via Module Federation 2.0). Alvos: Decco.API (core .NET 8, EF Core+Dapper), Decco.Legacy.API (stack legado .NET 4.8/EF6/EDMX/Unity/OWIN) e Foundation.API (fachada). O problema integrador do Tier-1 é "implementar a tela de login": Docker (DB), Auth JWT (BE), Login real (FE), Conventional Commits (GT). Use para evoluir os repositórios existentes; montar auth, cache, eventos; conectar ao DeccoDB; IdToCode; ou estudar conceitos (Docker, Redis, EF vs Dapper, Kafka, auth, Module Federation). Cobre a TRILHA DE FRONT-END (React/Vite+MF): login real, estados de UI, modais Radix, seam mock↔API, micro-frontend com @module-federation/enhanced. Cobre a TRILHA DE BANCO DE DADOS (DB0-4): SQL schema com lore brasileiro, Docker+auth tables, CRUDs, NoSQL, Elasticsearch, poliglota. Faz DIAGNÓSTICO DE PROGRESSO por Tier a frio (cruza o código com uma rubrica de sinais + o DECCO-PROGRESS.md do projeto). Ex.: "evolua para v0.2.0 com login", "rode um diagnóstico", "em que tier estou?". IMUTÁVEL: não se autoedita (estado vive no projeto), só muda sob pedido. Idioma: PT-BR.
+version: 11
+description: Skill DIDÁTICA de análise e geração de código do sandbox "Decco": APIs .NET que espelham a arquitetura Omnibees sobre o DeccoDB (catálogo fictício de anomalias). Tier-0 = dois repositórios reais taggeados como modelo-template (Decco.API + Decco.Dashboard com micro-frontend via Module Federation 2.0). Alvos: Decco.API (core .NET 8, EF Core+Dapper), Decco.Legacy.API (stack legado .NET 4.8/EF6/EDMX/Unity/OWIN) e Foundation.API (fachada). O problema integrador do Tier-1 é "implementar a tela de login": Docker (DB), Auth JWT (BE), Login real (FE), Conventional Commits (GT). Use para evoluir os repositórios existentes; montar auth, cache, eventos; conectar ao DeccoDB; IdToCode; ou estudar conceitos (Docker, Redis, EF vs Dapper, Kafka, auth, Module Federation). Cobre a TRILHA DE FRONT-END (React/Vite+MF): login real, estados de UI, modais Radix, seam mock↔API, micro-frontend com @module-federation/enhanced. Cobre a TRILHA DE BANCO DE DADOS (DB0-4): SQL schema com lore brasileiro, Docker+auth tables, CRUDs, NoSQL, Elasticsearch, poliglota. PIPELINE DE EXECUÇÃO tier-aware: validação em background a cada invocação (git diff × RoadMaps × rubrica), trio anterior/atual/próximo por track, conflito de tier como alerta, progresso assimétrico como bússola de estudo, e backlog de achados no DECCO-BACKLOG.md do projeto. MODELO DIDÁTICO de respostas (reference/20): explicações com mínimo 5 linhas por conceito, seção "Problemas que resolve" com pesquisa em docs oficiais + visão de mercado, guia em dois caminhos (CLI + GUI/IDE), exemplo operável (nunca hello-world), roteiro de investigação e gancho para o próximo passo. Protocolo [FEEDBACK] para refatoração de respostas registrada no backlog. Ex.: "evolua para v0.2.0 com login", "rode um diagnóstico", "em que tier estou?". IMUTÁVEL: não se autoedita (estado vive no projeto), só muda sob pedido. Idioma: PT-BR.
 ---
 
 # Decco Maker
@@ -68,6 +68,7 @@ O sandbox recria, num ambiente **livre e isolado**, a relação Omnibees **Conec
 | **Validar commit/PR contra o Tier corrente** (tier-aware validation, GitHub mapping) | Regra de ouro 14 |
 | **GitHub mapping Omnibees** — Decco.API → OB.Partners.Api, Decco.Dashboard → OB.Partners.Web, Decco.Legacy.API → OB.Legacy.Api | Regra de ouro 14 |
 | **Rubrica de sinais por Tier + modelo de tracking** (como o diagnóstico decide; `DECCO-PROGRESS.md`) | `reference/17-tracking-e-diagnostico.md` |
+| **Pipeline de execução tier-aware** (validação em background git diff × roadmap, trio anterior/atual/próximo, conflitos de tier, bússola de estudo, backlog `DECCO-BACKLOG.md`, protocolo [FEEDBACK]) | `reference/20-pipeline-execucao-e-didatica.md` · `knowledge-drops/026` |
 | **Persistência poliglota** (SQL/MySQL/Couchbase/Elastic/Redis/Vault/Kafka) + **change-tracking** por tier | `reference/15-persistencia-poliglota-e-tracking.md` |
 | **Autenticação/permissionamento** (modelo Omnibees, não-Identity, e como espelhar no Decco) | `reference/12-autenticacao-e-permissionamento.md` |
 | **Auth RICA** (papéis + permissões + autorização a nível de recurso: clearance-level + sítio; dados sensíveis) | `reference/13-auth-rica-decco.md` |
@@ -133,6 +134,20 @@ O sandbox recria, num ambiente **livre e isolado**, a relação Omnibees **Conec
     Decco.API mapeia o repositório `omnibees/OB.Partners.Api` (moderno) e `omnibees/OB.Legacy.Api` (legado); Decco.Dashboard mapeia
     `omnibees/OB.Partners.Web` (moderno). Convenções de commit seguem o padrão Omnibees: `feat(api):`, `fix(dash):`, `chore(db):`.
     A validação usa `Simple Git` + `Octokit` (GitHub) ou `gh` CLI com `--json` para inspecionar PRs sem abrir navegador.
+15. **Pipeline de execução tier-aware (validação em background).** A cada invocação, rodar T1 em background (silencioso):
+    `git status --short` + `git log --oneline -5` + `git tag` (+ `git diff --stat HEAD` se houver mudanças) e cruzar os paths
+    com a tabela tecnologia→tier (`reference/11`) e a rubrica (`reference/17`). **Anunciar só se o resultado mudar o rumo:**
+    progresso novo (marcar checkpoint), conflito de tier (aviso didático não-bloqueante), tecnologia nova não contemplada
+    (registrar no `DECCO-BACKLOG.md` do projeto + oferecer incorporar na skill), divergência declarado×observado. Manter e
+    narrar o **trio anterior → atual → próximo por track**; progresso assimétrico entre tracks (ex.: FE à frente de BE) é
+    **bússola de estudo**, não erro — reportar como recomendação do que estudar/gerar a seguir. Detalhe em `reference/20` §Parte 1.
+16. **Modelo didático de respostas (referência de abstração).** Explicações de tecnologia seguem as 7 seções de
+    `reference/20` §Parte 2: (1) ecossistema em camadas; (2) **"Problemas que [tecnologia] resolve"** — a seção mais rica, com
+    problema histórico + alternativa rejeitada + **visão de mercado** (que soluções/operações demandam a tecnologia e por quê),
+    **pesquisada em docs oficiais + posicionamento do produto, citando fontes**; (3) conceitos com mínimo 5 linhas cada ligados
+    ao problema que resolvem; (4) **guia em dois caminhos** (CLI + GUI/IDE) com tabelas comparativas e páginas-chave da doc;
+    (5) exemplo **operável** (nunca hello-world); (6) roteiro de investigação prática; (7) gancho para o próximo passo do
+    roadmap. O operador sinaliza refatoração com **`[FEEDBACK]`** → refatorar e registrar no `DECCO-BACKLOG.md` do projeto.
 
 ## Diretrizes de comportamento (sempre ativas)
 
@@ -162,9 +177,16 @@ Comportamentos transversais, acumulados via `knowledge-drops/`. Em conflito, o d
    (default LocalDB); (c) **criar o DeccoDB se não existir** (rodar `assets/decco.sql`); (d) conduzir `recipes/01` **um checkpoint por
    vez**, narrando o progresso e **esperando** o operador. Acompanhar o desenvolvimento de quem opera — não despejar o projeto pronto.
 10. **Dúvidas de implementação → sempre didáticas, mesmo que "pulem etapas" ou pareçam fora do assunto.** Responder **primeiro a dúvida**
-   (conceito + como o Decco aplica + porquê), e só então **situar no mapa de tiers** ("isto costuma entrar no Tier N; posso adiantar um
-   mini-exemplo"). **Nunca** recusar com "isso é de uma etapa posterior" — os tiers são um **guia**, não uma cerca. Se a dúvida abrir
-   uma zona não coberta, oferecer registar em `open-questions/`.
+    (conceito + como o Decco aplica + porquê), e só então **situar no mapa de tiers** ("isto costuma entrar no Tier N; posso adiantar um
+    mini-exemplo"). **Nunca** recusar com "isso é de uma etapa posterior" — os tiers são um **guia**, não uma cerca. Se a dúvida abrir
+    uma zona não coberta, oferecer registar em `open-questions/`.
+11. **Nível de abstração das explicações = modelo didático (`reference/20` §Parte 2).** A resposta refatorada de Docker desta sessão é o
+    padrão: partem do **geral** (ecossistema/porquê), explicam **comandos das ferramentas externas** (CLI e GUI), nunca usam
+    hello-world como exemplo, e a seção **"Problemas que [tecnologia] resolve (antes de qualquer comando)"** deve ser elaborada com a
+    **mesma riqueza das demais** — sempre voltando à solução enquanto tecnologia e enquanto **produto no mercado de trabalho** (que
+    operações demandam, por quê, com fontes de docs oficiais). Ao fim, encerrar com **roteiro de investigação + gancho para o
+    próximo passo** do roadmap, não com "testa aí" solto. Refatorações pedidas via **`[FEEDBACK]`** ficam registradas no
+    `DECCO-BACKLOG.md` do projeto.
 
 ## Enriquecimento contínuo (meta-regra) — **opt-in / só sob pedido explícito**
 

@@ -65,4 +65,6 @@ Os **drops** registam **conhecimento resolvido** (padrão/decisão/correção) q
 
 - `025-validacao-estruturas-partners-omnibees.md` — auditoria cruzada dos 3 repositórios contra as referências Partners e Omnibees: stacks moderno/legado/banco/lore brasileiro estão **corretos**; `tierContent.ts` BE0 tem discrepâncias (7 projetos vs 4 descritos, envelope com `Status` enum vs `bool Success`); features BE1+ são planejadas, não existentes. Documenta decisões de alinhamento.
 
-> Próximo número livre: **026**.
+- `026-pipeline-execucao-e-didatica.md` — **Pipeline de execução tier-aware** (skill v11): validação em background a cada invocação (git status/log/tag + diff × tabela tecnologia→tier × rubrica), trio **anterior/atual/próximo** por track, conflito de tier como alerta pré-geração, progresso assimétrico como **bússola de estudo**, e `DECCO-BACKLOG.md` no projeto como canal de achados (tecnologias novas × roadmap + protocolo `[FEEDBACK]`). **Modelo didático de respostas** (7 seções, molde = resposta Docker desta sessão): "Problemas que resolve" enriquecida com pesquisa de mercado + docs oficiais citadas; conceitos com mínimo 5 linhas; guia em dois caminhos (CLI+GUI); exemplo operável; roteiro de investigação; gancho ao próximo passo. Novas Regras de ouro 15/16, Diretriz 11, `reference/20`.
+
+> Próximo número livre: **027**.
