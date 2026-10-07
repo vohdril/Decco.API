@@ -7,17 +7,17 @@ using Decco.Contracts;
 namespace Decco.Api.Services;
 
 /// <summary>
-/// Operações — o trabalho escopado por instalação.
+/// Operations — the facility-scoped work.
 ///
-/// O recorte por INSTALAÇÃO PERMITIDA ao usuário ainda não acontece aqui: a
-/// relação usuário↔instalação vai viver no DeccoAuthDB, que não existe ainda.
-/// Hoje o filtro chega pronto no contrato (OperacaoFiltroDto.InstalacaoId /
-/// NivelAcessoUsuario); quando o auth existir, é a Foundation.API que preenche
-/// esses campos a partir do usuário — não o cliente.
+/// Slicing by the facilities ALLOWED to the user does not happen here yet: the
+/// user↔facility relation will live in DeccoAuthDB, which does not exist yet.
+/// Today the filter arrives ready in the contract (OperacaoFilterDto.InstalacaoId /
+/// NivelAcessoUsuario); once auth exists, Foundation.API fills those fields from the
+/// user — not the client.
 /// </summary>
 public class OperacaoService : IOperacaoService
 {
-    private const int TamanhoMaximoPagina = 200;
+    private const int MaxPageSize = 200;
 
     private readonly IOperacaoRepository _repo;
     private readonly ILogger<OperacaoService> _logger;
@@ -28,26 +28,26 @@ public class OperacaoService : IOperacaoService
         _logger = logger;
     }
 
-    public async Task<PagedResponse<OperacaoDto>> List(OperacaoFiltroDto filtro)
+    public async Task<PagedResponse<OperacaoDto>> List(OperacaoFilterDto filter)
     {
         try
         {
-            var pageIndex = Math.Max(0, filtro.PageIndex);
-            var pageSize = Math.Clamp(filtro.PageSize, 1, TamanhoMaximoPagina);
+            var pageIndex = Math.Max(0, filter.PageIndex);
+            var pageSize = Math.Clamp(filter.PageSize, 1, MaxPageSize);
 
-            var (itens, total) = await _repo.BuscarAsync(new OperacaoFiltro(
-                filtro.InstalacaoId,
-                filtro.IncluirSubinstalacoes,
-                filtro.TipoOperacaoId,
-                filtro.Status,
-                filtro.AnomaliaId,
-                filtro.NivelAcessoUsuario,
+            var (items, total) = await _repo.SearchAsync(new OperacaoFilter(
+                filter.InstalacaoId,
+                filter.IncluirSubinstalacoes,
+                filter.TipoOperacaoId,
+                filter.Status,
+                filter.AnomaliaId,
+                filter.NivelAcessoUsuario,
                 pageIndex,
                 pageSize));
 
             return new PagedResponse<OperacaoDto>
             {
-                Data = itens.Select(MapToDto).ToList(),
+                Data = items.Select(MapToDto).ToList(),
                 PageIndex = pageIndex,
                 PageSize = pageSize,
                 TotalRecords = total
@@ -104,7 +104,7 @@ public class OperacaoService : IOperacaoService
         catch (Exception ex) { return ErrorResponseHelper.Fail<bool>(_logger, ex); }
     }
 
-    private static OperacaoDto MapToDto(OperacaoResumo r) => new()
+    private static OperacaoDto MapToDto(OperacaoSummary r) => new()
     {
         Id = r.Id, Codigo = r.Codigo, Codinome = r.Codinome,
         TipoOperacaoId = r.TipoOperacaoId, TipoOperacaoCodigo = r.TipoOperacaoCodigo, TipoOperacao = r.TipoOperacao,

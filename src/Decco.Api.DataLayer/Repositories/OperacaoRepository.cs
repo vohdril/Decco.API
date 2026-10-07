@@ -6,9 +6,9 @@ using System.Data;
 namespace Decco.Api.DataLayer.Repositories;
 
 /// <summary>
-/// A listagem é por stored procedure (sp_Operacao_Buscar): é a consulta
-/// ESCOPADA — instalação + filhas + clearance — e devolve dois result sets
-/// (página e total), lidos com QueryMultiple. Get continua por EF.
+/// The list goes through a stored procedure (sp_Operacao_Buscar): it is the SCOPED
+/// query — facility + children + clearance — and returns two result sets (page and
+/// total), read with QueryMultiple. Get stays on EF.
 /// </summary>
 public class OperacaoRepository : IOperacaoRepository
 {
@@ -19,29 +19,29 @@ public class OperacaoRepository : IOperacaoRepository
         _ctx = ctx;
     }
 
-    public async Task<(List<OperacaoResumo> Itens, int Total)> BuscarAsync(OperacaoFiltro filtro)
+    public async Task<(List<OperacaoSummary> Items, int Total)> SearchAsync(OperacaoFilter filter)
     {
-        // Conexão do DbContext — sem `using` (ver AnomaliaRepository.InsertAsync).
+        // DbContext connection — no `using` (see AnomaliaRepository.InsertAsync).
         var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
-        p.Add("@InstalacaoId", filtro.InstalacaoId);
-        p.Add("@IncluirSubinstalacoes", filtro.IncluirSubinstalacoes);
-        p.Add("@TipoOperacaoId", filtro.TipoOperacaoId);
-        p.Add("@Status", filtro.Status);
-        p.Add("@AnomaliaId", filtro.AnomaliaId);
-        p.Add("@NivelAcessoUsuario", filtro.NivelAcessoUsuario);
-        p.Add("@Pagina", filtro.PageIndex + 1);   // contrato base 0 → SP base 1
-        p.Add("@ItensPorPagina", filtro.PageSize);
+        p.Add("@InstalacaoId", filter.InstalacaoId);
+        p.Add("@IncluirSubinstalacoes", filter.IncluirSubinstalacoes);
+        p.Add("@TipoOperacaoId", filter.TipoOperacaoId);
+        p.Add("@Status", filter.Status);
+        p.Add("@AnomaliaId", filter.AnomaliaId);
+        p.Add("@NivelAcessoUsuario", filter.NivelAcessoUsuario);
+        p.Add("@Pagina", filter.PageIndex + 1);   // 0-based contract → 1-based stored procedure
+        p.Add("@ItensPorPagina", filter.PageSize);
 
         using var multi = await conn.QueryMultipleAsync(
             "sp_Operacao_Buscar",
             p,
             commandType: CommandType.StoredProcedure);
 
-        var itens = (await multi.ReadAsync<OperacaoResumo>()).ToList();
+        var items = (await multi.ReadAsync<OperacaoSummary>()).ToList();
         var total = await multi.ReadSingleAsync<int>();
 
-        return (itens, total);
+        return (items, total);
     }
 
     public async Task<Operacao?> GetByIdAsync(int id)
@@ -72,7 +72,7 @@ public class OperacaoRepository : IOperacaoRepository
         p.Add("@Responsavel", operacao.Responsavel);
         p.Add("@DataPrevisaoTermino", operacao.DataPrevisaoTermino);
 
-        // A SP devolve (NovoId, CodigoFormatado); o Dapper mapeia a 1ª coluna.
+        // The stored procedure returns (NovoId, CodigoFormatado); Dapper maps the first column.
         var result = await conn.QueryAsync<int>(
             "sp_Operacao_Inserir",
             p,
@@ -83,7 +83,7 @@ public class OperacaoRepository : IOperacaoRepository
 
     public async Task UpdateAsync(Operacao operacao)
     {
-        // Codigo e InstalacaoId não vão: não são atualizáveis (ver sp_Operacao_Atualizar).
+        // Codigo and InstalacaoId are not sent: they cannot be updated (see sp_Operacao_Atualizar).
         var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
         p.Add("@Id", operacao.Id);

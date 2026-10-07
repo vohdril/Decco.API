@@ -15,11 +15,11 @@ public class OperacaoController : ControllerBase
         _service = service;
     }
 
-    // O corpo do List é o FILTRO (OperacaoFiltroDto) — é por isso que a API é POST:
-    // o contrato descreve o recorte (instalação, tipo, status, clearance, página).
+    // The List body is the FILTER (OperacaoFilterDto) — that is why the API uses POST:
+    // the contract describes the slice (facility, type, status, clearance, page).
     [HttpPost("List")]
-    public async Task<PagedResponse<OperacaoDto>> List([FromBody] RequestBase<OperacaoFiltroDto?> request)
-        => await _service.List(request.Data ?? new OperacaoFiltroDto());
+    public async Task<PagedResponse<OperacaoDto>> List([FromBody] RequestBase<OperacaoFilterDto?> request)
+        => await _service.List(request.Data ?? new OperacaoFilterDto());
 
     [HttpPost("Get")]
     public async Task<SingleResponse<OperacaoDto>> Get([FromBody] RequestBase<int> request)

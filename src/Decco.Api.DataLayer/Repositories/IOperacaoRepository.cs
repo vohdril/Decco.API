@@ -5,7 +5,7 @@ namespace Decco.Api.DataLayer.Repositories;
 
 public interface IOperacaoRepository : IRepository
 {
-    Task<(List<OperacaoResumo> Itens, int Total)> BuscarAsync(OperacaoFiltro filtro);
+    Task<(List<OperacaoSummary> Items, int Total)> SearchAsync(OperacaoFilter filter);
     Task<Operacao?> GetByIdAsync(int id);
     Task<int> InsertAsync(Operacao operacao);
     Task UpdateAsync(Operacao operacao);

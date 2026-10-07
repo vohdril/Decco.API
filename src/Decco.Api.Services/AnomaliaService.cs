@@ -41,7 +41,7 @@ public class AnomaliaService : IAnomaliaService
             page = Math.Max(0, page);
             pageSize = Math.Clamp(pageSize, 1, 200);
 
-            // Paginação no banco (Skip/Take no repositório), não em memória.
+            // Paging happens in the database (Skip/Take in the repository), not in memory.
             var (entities, total) = await _repo.ListAsync(page, pageSize);
             var items = entities.Select(MapToDto).ToList();
 
@@ -138,9 +138,9 @@ public class AnomaliaService : IAnomaliaService
         DataAtualizacao = entity.DataAtualizacao ?? DateTime.Now
     };
 
-    // Os Ids de classificação NÃO eram mapeados (o DTO só tinha os nomes), então
-    // todo Insert chegava à SP com ClasseObjetoId/CamadaOntologicaId/... = 0 e
-    // falhava na FK. Coberto por AnomaliaServiceTests.
+    // Classification Ids were NOT mapped (the DTO only had the names), so every
+    // Insert reached the stored procedure with ClasseObjetoId/CamadaOntologicaId/... = 0
+    // and failed on the FK. Covered by AnomaliaServiceTests.
     private static Anomalia MapToEntity(AnomaliaDto dto) => new()
     {
         Id = dto.Id,

@@ -12,8 +12,8 @@ public class NotificacaoAnomaliaDto
     public string? Relator { get; set; }
     public int? AnomaliaId { get; set; }
 
-    // Instalação conhecida onde o relato foi feito — opcional: LocalIdentificado
-    // continua sendo a descrição textual, e um relato de fora do perímetro fica sem ela.
+    // Known facility where the report was made — optional: LocalIdentificado remains
+    // the textual description, and a report from outside the perimeter has none.
     public int? InstalacaoId { get; set; }
     public string? InstalacaoCodigo { get; set; }
 

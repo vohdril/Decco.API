@@ -2,9 +2,9 @@ namespace Decco.Api.Contracts;
 
 public static class ErrorCodes
 {
-    public static readonly ErrorCode NotFound = new("NOT_FOUND", "Registro não encontrado");
-    public static readonly ErrorCode ValidationFailed = new("VALIDATION_FAILED", "Falha na validação");
-    public static readonly ErrorCode InternalError = new("INTERNAL_ERROR", "Erro interno do servidor");
+    public static readonly ErrorCode NotFound = new("NOT_FOUND", "Record not found");
+    public static readonly ErrorCode ValidationFailed = new("VALIDATION_FAILED", "Validation failed");
+    public static readonly ErrorCode InternalError = new("INTERNAL_ERROR", "Internal server error");
 }
 
 public class ErrorCode

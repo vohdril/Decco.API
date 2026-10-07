@@ -7,8 +7,8 @@ public class RequestBase<T>
 }
 
 /// <summary>
-/// Paginação pedida pelo cliente — corpo do POST de List. Base 0, como o
-/// PagedResponse que volta. (A Foundation.API expõe base 1 para fora e converte.)
+/// Pagination requested by the client — body of a List POST. 0-based, like the
+/// PagedResponse that comes back. (Foundation.API exposes 1-based outside and converts.)
 /// </summary>
 public class PageRequest
 {

@@ -7,7 +7,7 @@ public class AnomaliaDto
     public string NomeComum { get; set; } = string.Empty;
     public string Descricao { get; set; } = string.Empty;
 
-    // Classificação — o Id é o que se GRAVA; o nome é só leitura (preenchido no Get/List).
+    // Classification — the Id is what gets WRITTEN; the name is read-only (filled on Get/List).
     public int ClasseObjetoId { get; set; }
     public string ClasseObjeto { get; set; } = string.Empty;
     public int CamadaOntologicaId { get; set; }
@@ -27,7 +27,7 @@ public class AnomaliaDto
     public string? FatorCoerenciaSpin { get; set; }
     public string Status { get; set; } = "ATIVA";
 
-    // Onde a anomalia está contida — substitui o antigo texto livre SitioContencao.
+    // Where the anomaly is contained — replaces the former free-text SitioContencao.
     public int? InstalacaoContencaoId { get; set; }
     public string? InstalacaoContencaoCodigo { get; set; }
     public string? InstalacaoContencao { get; set; }

@@ -1,15 +1,15 @@
 namespace Decco.Contracts;
 
 /// <summary>
-/// Lugar físico do DeCCO — sítio, laboratório, área de contenção ou posto avançado.
-/// Substitui o antigo LaboratorioDto: um laboratório é uma instalação do tipo
-/// LABORATORIO cujo pai é um sítio.
+/// A physical DeCCO facility — site, laboratory, containment area or forward post.
+/// Replaces the former LaboratorioDto: a laboratory is a facility of type
+/// LABORATORIO whose parent is a site.
 /// </summary>
 public class InstalacaoDto
 {
     public int Id { get; set; }
 
-    /// <summary>Identidade pública (ex.: SITIO-19, LAB-BIO-19). Não muda depois de criada.</summary>
+    /// <summary>Public identity (e.g. SITIO-19, LAB-BIO-19). Never changes after creation.</summary>
     public string Codigo { get; set; } = string.Empty;
     public string Nome { get; set; } = string.Empty;
     public string? Descricao { get; set; }

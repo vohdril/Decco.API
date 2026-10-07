@@ -6,9 +6,9 @@ using System.Data;
 namespace Decco.Api.DataLayer.Repositories;
 
 /// <summary>
-/// Leitura por EF (com tipo e pai), escrita por stored procedure — mesmo padrão
-/// híbrido de Anomalia. As regras de hierarquia ficam no banco
-/// (TR_Instalacao_Validar_Hierarquia); aqui não se duplica regra.
+/// Reads through EF (with type and parent), writes through stored procedures — the same
+/// hybrid pattern as Anomalia. Hierarchy rules live in the database
+/// (TR_Instalacao_Validar_Hierarquia); they are not duplicated here.
 /// </summary>
 public class InstalacaoRepository : IInstalacaoRepository
 {
@@ -38,7 +38,7 @@ public class InstalacaoRepository : IInstalacaoRepository
 
     public async Task<int> InsertAsync(Instalacao instalacao)
     {
-        // Conexão do DbContext — sem `using` (ver AnomaliaRepository.InsertAsync).
+        // DbContext connection — no `using` (see AnomaliaRepository.InsertAsync).
         var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
         p.Add("@Codigo", instalacao.Codigo);
@@ -60,7 +60,7 @@ public class InstalacaoRepository : IInstalacaoRepository
 
     public async Task UpdateAsync(Instalacao instalacao)
     {
-        // Codigo não vai: não é atualizável (identidade pública e chave de cache).
+        // Codigo is not sent: it cannot be updated (public identity and cache key).
         var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
         p.Add("@Id", instalacao.Id);

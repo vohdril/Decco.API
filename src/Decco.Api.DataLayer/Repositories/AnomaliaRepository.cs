@@ -14,7 +14,7 @@ public class AnomaliaRepository : IAnomaliaRepository
         _ctx = ctx;
     }
 
-    private IQueryable<Anomalia> ComClassificacao() => _ctx.Set<Anomalia>()
+    private IQueryable<Anomalia> WithClassification() => _ctx.Set<Anomalia>()
         .Include(a => a.ClasseObjeto)
         .Include(a => a.CamadaOntologica)
         .Include(a => a.TipoMateria)
@@ -27,25 +27,25 @@ public class AnomaliaRepository : IAnomaliaRepository
     public async Task<(List<Anomalia> Itens, int Total)> ListAsync(int pageIndex, int pageSize)
     {
         var total = await _ctx.Set<Anomalia>().CountAsync();
-        var itens = await ComClassificacao()
+        var items = await WithClassification()
             .OrderBy(a => a.CodigoScp)
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        return (itens, total);
+        return (items, total);
     }
 
     public async Task<Anomalia?> GetByIdAsync(int id)
     {
-        return await ComClassificacao().FirstOrDefaultAsync(a => a.Id == id);
+        return await WithClassification().FirstOrDefaultAsync(a => a.Id == id);
     }
 
     public async Task<int> InsertAsync(Anomalia anomalia)
     {
-        // A conexão é do DbContext: NÃO usar `using` aqui. Um `using var conn`
-        // descartava a conexão do contexto e quebrava o próximo uso dele no
-        // mesmo request. O Dapper abre e fecha a conexão se ela estiver fechada.
+        // The connection belongs to the DbContext: do NOT use `using` here. A `using var conn`
+        // disposed the context connection and broke its next use within the same request.
+        // Dapper opens and closes the connection when it is closed.
         var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
         p.Add("@CodigoSCP", anomalia.CodigoScp);
@@ -78,12 +78,12 @@ public class AnomaliaRepository : IAnomaliaRepository
         p.Add("@Id", anomalia.Id);
         p.Add("@NomeComum", anomalia.NomeComum);
         p.Add("@Descricao", anomalia.Descricao);
-        // Na SP, NULL = "não alterar". Um Id obrigatório que chega 0 (não
-        // informado no DTO) vira NULL, em vez de tentar gravar uma FK inexistente.
-        p.Add("@ClasseObjetoId", NuloSeZero(anomalia.ClasseObjetoId));
-        p.Add("@CamadaOntologicaId", NuloSeZero(anomalia.CamadaOntologicaId));
-        p.Add("@TipoMateriaId", NuloSeZero(anomalia.TipoMateriaId));
-        p.Add("@MecanismoPrimarioId", NuloSeZero(anomalia.MecanismoPrimarioId));
+        // In the stored procedure, NULL = "do not change". A mandatory Id arriving as 0 (not
+        // provided in the DTO) becomes NULL, instead of trying to write a non-existent FK.
+        p.Add("@ClasseObjetoId", NullIfZero(anomalia.ClasseObjetoId));
+        p.Add("@CamadaOntologicaId", NullIfZero(anomalia.CamadaOntologicaId));
+        p.Add("@TipoMateriaId", NullIfZero(anomalia.TipoMateriaId));
+        p.Add("@MecanismoPrimarioId", NullIfZero(anomalia.MecanismoPrimarioId));
         p.Add("@MecanismoSecundarioId", anomalia.MecanismoSecundarioId);
         p.Add("@IEIA_D_Base", anomalia.IeiaDBase);
         p.Add("@FatorCoerenciaSpin", anomalia.FatorCoerenciaSpin);
@@ -106,5 +106,5 @@ public class AnomaliaRepository : IAnomaliaRepository
         }
     }
 
-    private static int? NuloSeZero(int valor) => valor == 0 ? null : valor;
+    private static int? NullIfZero(int value) => value == 0 ? null : value;
 }

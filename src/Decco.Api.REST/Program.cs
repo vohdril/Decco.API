@@ -3,7 +3,7 @@ using Decco.Api.Root;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
-/* PID handshake: grava o PID para o pré-build matar o processo anterior */
+/* PID handshake: writes the PID so the pre-build step can kill the previous process */
 var pidFile = Path.Combine(Path.GetTempPath(), ".decco-api-rest.pid");
 try { File.WriteAllText(pidFile, Environment.ProcessId.ToString()); } catch { }
 
@@ -56,5 +56,5 @@ if (Directory.Exists(mfRemotePath))
 
 app.Run();
 
-/* Limpa o PID ao encerrar */
+/* Removes the PID file on shutdown */
 try { if (File.Exists(pidFile)) File.Delete(pidFile); } catch { }

@@ -3,11 +3,11 @@ using System;
 namespace Decco.Api.DataLayer.Models;
 
 /// <summary>
-/// Linha devolvida por sp_Operacao_Buscar — um READ MODEL, não uma entidade.
-/// Não implementa IEntity e não tem IEntityTypeConfiguration: o EF não o
-/// conhece; quem o materializa é o Dapper, coluna a coluna, pelo nome.
+/// Row returned by sp_Operacao_Buscar — a READ MODEL, not an entity.
+/// It does not implement IEntity and has no IEntityTypeConfiguration: EF does not know it;
+/// Dapper materializes it, column by column, by name.
 /// </summary>
-public class OperacaoResumo
+public class OperacaoSummary
 {
     public int Id { get; set; }
     public string Codigo { get; set; } = null!;
@@ -33,8 +33,8 @@ public class OperacaoResumo
     public DateTime? DataEncerramento { get; set; }
 }
 
-/// <summary>Parâmetros de sp_Operacao_Buscar. PageIndex é base 0; a SP é base 1.</summary>
-public record OperacaoFiltro(
+/// <summary>Parameters of sp_Operacao_Buscar. PageIndex is 0-based; the stored procedure is 1-based.</summary>
+public record OperacaoFilter(
     int? InstalacaoId = null,
     bool IncluirSubinstalacoes = true,
     int? TipoOperacaoId = null,

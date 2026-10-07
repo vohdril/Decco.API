@@ -5,15 +5,15 @@ using Microsoft.Extensions.Logging;
 namespace Decco.Api.Common;
 
 /// <summary>
-/// Respostas de erro padronizadas do envelope.
+/// Standardized envelope error responses.
 ///
-/// REGRA DE SEGURANÇA: o cliente NUNCA recebe <c>ex.Message</c>. A mensagem de
-/// erro é sempre genérica; o detalhe vai para o log, do lado de dentro.
+/// SECURITY RULE: the client NEVER receives <c>ex.Message</c>. The error message is always
+/// generic; the details go to the log, on the inside.
 ///
-/// As sobrecargas que recebem <see cref="ILogger"/> existem porque a versão
-/// anterior deste helper era usada em <c>catch { }</c> sem log — o que tornou
-/// o bug do typo "Anomalium" (Invalid object name) invisível por semanas.
-/// Não logar não é segurança; é cegueira.
+/// The overloads that take an <see cref="ILogger"/> exist because the previous version of
+/// this helper was used in <c>catch { }</c> blocks without logging — which made the
+/// "Anomalium" typo bug (Invalid object name) invisible for weeks.
+/// Not logging is not security; it is blindness.
 /// </summary>
 public static class ErrorResponseHelper
 {
@@ -24,37 +24,37 @@ public static class ErrorResponseHelper
     };
 
     public static SingleResponse<T> Fail<T>() =>
-        Fail<T>("INTERNAL_ERROR", "Erro interno do servidor");
+        Fail<T>("INTERNAL_ERROR", "Internal server error");
 
     public static SingleResponse<T> NotFound<T>() =>
-        Fail<T>("NOT_FOUND", "Registro não encontrado");
+        Fail<T>("NOT_FOUND", "Record not found");
 
     /// <summary>
-    /// Registra a exceção e devolve o erro genérico.
-    /// <paramref name="metodo"/> é preenchido pelo compilador com o nome do
-    /// membro chamador (<see cref="CallerMemberNameAttribute"/>) — por isso o
-    /// <c>catch</c> no serviço não precisa repetir o nome do método.
+    /// Logs the exception and returns the generic error.
+    /// <paramref name="method"/> is filled by the compiler with the caller member name
+    /// (<see cref="CallerMemberNameAttribute"/>) — so the service's <c>catch</c> does not
+    /// need to repeat the method name.
     /// </summary>
     public static SingleResponse<T> Fail<T>(
         ILogger logger,
         Exception ex,
-        [CallerMemberName] string metodo = "")
+        [CallerMemberName] string method = "")
     {
-        logger.LogError(ex, "Falha inesperada em {Metodo} ({Retorno})", metodo, typeof(T).Name);
+        logger.LogError(ex, "Unexpected failure in {Method} ({ReturnType})", method, typeof(T).Name);
         return Fail<T>();
     }
 
-    /// <summary>Variante paginada — mesmo contrato, para as operações de List.</summary>
+    /// <summary>Paged variant — same contract, for List operations.</summary>
     public static PagedResponse<T> FailPaged<T>(
         ILogger logger,
         Exception ex,
-        [CallerMemberName] string metodo = "")
+        [CallerMemberName] string method = "")
     {
-        logger.LogError(ex, "Falha inesperada em {Metodo} (PagedResponse<{Retorno}>)", metodo, typeof(T).Name);
+        logger.LogError(ex, "Unexpected failure in {Method} (PagedResponse<{ReturnType}>)", method, typeof(T).Name);
         return new PagedResponse<T>
         {
             Status = ResponseStatus.Fail,
-            Error = new ErrorInfo { Code = "INTERNAL_ERROR", Message = "Erro interno do servidor" }
+            Error = new ErrorInfo { Code = "INTERNAL_ERROR", Message = "Internal server error" }
         };
     }
 }

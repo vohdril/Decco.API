@@ -30,7 +30,7 @@ public class NotificacaoAnomaliaRepository : INotificacaoAnomaliaRepository
 
     public async Task<int> InsertAsync(NotificacaoAnomalia notificacao)
     {
-        // Conexão do DbContext — sem `using` (ver AnomaliaRepository.InsertAsync).
+        // DbContext connection — no `using` (see AnomaliaRepository.InsertAsync).
         var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
         p.Add("@Titulo", notificacao.Titulo);

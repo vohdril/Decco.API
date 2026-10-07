@@ -8,9 +8,9 @@ public class InstalacaoConfiguration : IEntityTypeConfiguration<Instalacao>
 {
     public void Configure(EntityTypeBuilder<Instalacao> builder)
     {
-        // Os triggers precisam ser DECLARADOS: desde o EF Core 7, o SaveChanges usa
-        // OUTPUT para ler valores gerados, e o SQL Server recusa OUTPUT sem INTO
-        // numa tabela com trigger. HasTrigger faz o EF trocar a estratégia.
+        // Triggers must be DECLARED: since EF Core 7, SaveChanges uses OUTPUT to read
+        // generated values, and SQL Server rejects OUTPUT without INTO on a table with
+        // triggers. HasTrigger makes EF switch strategy.
         builder.ToTable("Instalacao", tb =>
             {
                 tb.HasTrigger("TR_Instalacao_Update_Date");
