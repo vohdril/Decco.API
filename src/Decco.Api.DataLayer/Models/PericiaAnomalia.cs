@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class PericiaAnomalium : IEntity
+public partial class PericiaAnomalia : IEntity
 {
     public int Id { get; set; }
 
@@ -21,7 +21,7 @@ public partial class PericiaAnomalium : IEntity
 
     public string? Custo { get; set; }
 
-    public virtual Anomalium Anomalia { get; set; } = null!;
+    public virtual Anomalia Anomalia { get; set; } = null!;
 
     public virtual ICollection<InstanciaPericiaDesviante> InstanciaPericiaDesviantes { get; set; } = new List<InstanciaPericiaDesviante>();
 

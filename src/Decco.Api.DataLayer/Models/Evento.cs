@@ -23,5 +23,5 @@ public partial class Evento : IEntity
 
     public string? PreCondicoes { get; set; }
 
-    public virtual Anomalium Anomalia { get; set; } = null!;
+    public virtual Anomalia Anomalia { get; set; } = null!;
 }

@@ -25,5 +25,5 @@ public partial class CatClasseObjeto : IEntity
 
     public bool Ativo { get; set; }
 
-    public virtual ICollection<Anomalium> Anomalia { get; set; } = new List<Anomalium>();
+    public virtual ICollection<Anomalia> Anomalia { get; set; } = new List<Anomalia>();
 }

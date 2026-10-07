@@ -11,5 +11,5 @@ public partial class CatPericulosidade : IEntity
     public string Descricao { get; set; } = null!;
     public string? CorAlerta { get; set; }
 
-    public virtual ICollection<Anomalium> Anomalia { get; set; } = new List<Anomalium>();
+    public virtual ICollection<Anomalia> Anomalia { get; set; } = new List<Anomalia>();
 }

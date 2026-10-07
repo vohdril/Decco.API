@@ -19,5 +19,5 @@ public partial class InstanciaPericiaDesviante : IEntity
 
     public string? Observacoes { get; set; }
 
-    public virtual PericiaAnomalium PericiaDesviante { get; set; } = null!;
+    public virtual PericiaAnomalia PericiaDesviante { get; set; } = null!;
 }

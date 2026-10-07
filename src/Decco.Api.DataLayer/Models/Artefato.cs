@@ -25,5 +25,5 @@ public partial class Artefato : IEntity
 
     public string? ModoUsar { get; set; }
 
-    public virtual Anomalium Anomalia { get; set; } = null!;
+    public virtual Anomalia Anomalia { get; set; } = null!;
 }

@@ -4,11 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Decco.Api.DataLayer.Configurations;
 
-public class PericiaAnomaliumConfiguration : IEntityTypeConfiguration<PericiaAnomalium>
+public class PericiaAnomaliaConfiguration : IEntityTypeConfiguration<PericiaAnomalia>
 {
-    public void Configure(EntityTypeBuilder<PericiaAnomalium> builder)
+    public void Configure(EntityTypeBuilder<PericiaAnomalia> builder)
     {
         builder.HasKey(e => e.Id).HasName("PK__PericiaA__3214EC073B1D400F");
+
+        builder.ToTable("PericiaAnomalia");
 
         builder.HasIndex(e => new { e.AnomaliaId, e.Nome }, "UQ_Pericia_Anomalia_Nome").IsUnique();
 
@@ -20,12 +22,12 @@ public class PericiaAnomaliumConfiguration : IEntityTypeConfiguration<PericiaAno
             .HasForeignKey(d => d.AnomaliaId)
             .HasConstraintName("FK__PericiaAn__Anoma__59FA5E80");
 
-        builder.HasOne(d => d.MecanismoPrimario).WithMany(p => p.PericiaAnomaliumMecanismoPrimarios)
+        builder.HasOne(d => d.MecanismoPrimario).WithMany(p => p.PericiaAnomaliaMecanismoPrimarios)
             .HasForeignKey(d => d.MecanismoPrimarioId)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("FK__PericiaAn__Mecan__5AEE82B9");
 
-        builder.HasOne(d => d.MecanismoSecundario).WithMany(p => p.PericiaAnomaliumMecanismoSecundarios)
+        builder.HasOne(d => d.MecanismoSecundario).WithMany(p => p.PericiaAnomaliaMecanismoSecundarios)
             .HasForeignKey(d => d.MecanismoSecundarioId)
             .HasConstraintName("FK__PericiaAn__Mecan__5BE2A6F2");
     }

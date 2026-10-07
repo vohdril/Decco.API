@@ -27,5 +27,5 @@ public partial class Incidente : IEntity
 
     public string? DanoMaterial { get; set; }
 
-    public virtual Anomalium Anomalia { get; set; } = null!;
+    public virtual Anomalia Anomalia { get; set; } = null!;
 }

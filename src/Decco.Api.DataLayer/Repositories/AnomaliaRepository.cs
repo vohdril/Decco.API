@@ -15,9 +15,9 @@ public class AnomaliaRepository : IAnomaliaRepository
         _ctx = ctx;
     }
 
-    public async Task<List<Anomalium>> ListAsync()
+    public async Task<List<Anomalia>> ListAsync()
     {
-        return await _ctx.Set<Anomalium>()
+        return await _ctx.Set<Anomalia>()
             .Include(a => a.ClasseObjeto)
             .Include(a => a.CamadaOntologica)
             .Include(a => a.TipoMateria)
@@ -26,9 +26,9 @@ public class AnomaliaRepository : IAnomaliaRepository
             .ToListAsync();
     }
 
-    public async Task<Anomalium?> GetByIdAsync(int id)
+    public async Task<Anomalia?> GetByIdAsync(int id)
     {
-        return await _ctx.Set<Anomalium>()
+        return await _ctx.Set<Anomalia>()
             .Include(a => a.ClasseObjeto)
             .Include(a => a.CamadaOntologica)
             .Include(a => a.TipoMateria)
@@ -37,7 +37,7 @@ public class AnomaliaRepository : IAnomaliaRepository
             .FirstOrDefaultAsync(a => a.Id == id);
     }
 
-    public async Task<int> InsertAsync(Anomalium anomalia)
+    public async Task<int> InsertAsync(Anomalia anomalia)
     {
         using var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
@@ -62,7 +62,7 @@ public class AnomaliaRepository : IAnomaliaRepository
         return result.Single();
     }
 
-    public async Task UpdateAsync(Anomalium anomalia)
+    public async Task UpdateAsync(Anomalia anomalia)
     {
         using var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
@@ -85,10 +85,10 @@ public class AnomaliaRepository : IAnomaliaRepository
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _ctx.Set<Anomalium>().FindAsync(id);
+        var entity = await _ctx.Set<Anomalia>().FindAsync(id);
         if (entity != null)
         {
-            _ctx.Set<Anomalium>().Remove(entity);
+            _ctx.Set<Anomalia>().Remove(entity);
             await _ctx.SaveChangesAsync();
         }
     }

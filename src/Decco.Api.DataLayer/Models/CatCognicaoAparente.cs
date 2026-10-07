@@ -10,5 +10,5 @@ public partial class CatCognicaoAparente : IEntity
     public string Nome { get; set; } = null!;
     public string Descricao { get; set; } = null!;
 
-    public virtual ICollection<Anomalium> Anomalia { get; set; } = new List<Anomalium>();
+    public virtual ICollection<Anomalia> Anomalia { get; set; } = new List<Anomalia>();
 }

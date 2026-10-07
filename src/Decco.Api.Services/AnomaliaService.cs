@@ -105,7 +105,7 @@ public class AnomaliaService : IAnomaliaService
         }
     }
 
-    private static AnomaliaDto MapToDto(Anomalium entity) => new()
+    private static AnomaliaDto MapToDto(Anomalia entity) => new()
     {
         Id = entity.Id,
         CodigoSCP = entity.CodigoScp,
@@ -125,7 +125,7 @@ public class AnomaliaService : IAnomaliaService
         DataAtualizacao = entity.DataAtualizacao ?? DateTime.Now
     };
 
-    private static Anomalium MapToEntity(AnomaliaDto dto) => new()
+    private static Anomalia MapToEntity(AnomaliaDto dto) => new()
     {
         Id = dto.Id,
         CodigoScp = dto.CodigoSCP,

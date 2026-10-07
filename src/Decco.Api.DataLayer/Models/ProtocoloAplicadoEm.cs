@@ -11,6 +11,6 @@ public partial class ProtocoloAplicadoEm : IEntity
     public string? Status { get; set; }
     public string? Observacoes { get; set; }
 
-    public virtual Anomalium Anomalium { get; set; } = null!;
+    public virtual Anomalia Anomalia { get; set; } = null!;
     public virtual ProtocoloContencao ProtocoloContencao { get; set; } = null!;
 }

@@ -23,5 +23,5 @@ public partial class Localidade : IEntity
 
     public string? ClimaAnomalo { get; set; }
 
-    public virtual Anomalium Anomalia { get; set; } = null!;
+    public virtual Anomalia Anomalia { get; set; } = null!;
 }

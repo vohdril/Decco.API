@@ -18,7 +18,7 @@ public class NotificacaoAnomaliaConfiguration : IEntityTypeConfiguration<Notific
         builder.Property(e => e.Relator).HasMaxLength(255);
         builder.Property(e => e.DataResolucao).HasColumnType("datetime");
 
-        builder.HasOne(d => d.Anomalium).WithMany(p => p.NotificacaoAnomalias)
+        builder.HasOne(d => d.Anomalia).WithMany(p => p.NotificacaoAnomalias)
             .HasForeignKey(d => d.AnomaliaId)
             .HasConstraintName("FK_NotificacaoAnomalia_Anomalia");
     }

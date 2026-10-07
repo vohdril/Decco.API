@@ -17,13 +17,13 @@ public partial class CatMecanismoInteracao : IEntity
 
     public bool EhSubnatureza { get; set; }
 
-    public virtual ICollection<Anomalium> AnomaliumMecanismoPrimarios { get; set; } = new List<Anomalium>();
+    public virtual ICollection<Anomalia> AnomaliaMecanismoPrimarios { get; set; } = new List<Anomalia>();
 
-    public virtual ICollection<Anomalium> AnomaliumMecanismoSecundarios { get; set; } = new List<Anomalium>();
+    public virtual ICollection<Anomalia> AnomaliaMecanismoSecundarios { get; set; } = new List<Anomalia>();
 
     public virtual CatCamadaOntologica CamadaOntologica { get; set; } = null!;
 
-    public virtual ICollection<PericiaAnomalium> PericiaAnomaliumMecanismoPrimarios { get; set; } = new List<PericiaAnomalium>();
+    public virtual ICollection<PericiaAnomalia> PericiaAnomaliaMecanismoPrimarios { get; set; } = new List<PericiaAnomalia>();
 
-    public virtual ICollection<PericiaAnomalium> PericiaAnomaliumMecanismoSecundarios { get; set; } = new List<PericiaAnomalium>();
+    public virtual ICollection<PericiaAnomalia> PericiaAnomaliaMecanismoSecundarios { get; set; } = new List<PericiaAnomalia>();
 }

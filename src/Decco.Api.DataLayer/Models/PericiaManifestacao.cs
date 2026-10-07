@@ -15,5 +15,5 @@ public partial class PericiaManifestacao : IEntity
 
     public virtual CatManifestacaoEspecifica ManifestacaoEspecifica { get; set; } = null!;
 
-    public virtual PericiaAnomalium PericiaAnomalia { get; set; } = null!;
+    public virtual PericiaAnomalia PericiaAnomalia { get; set; } = null!;
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Decco.Api.DataLayer.Models;
 
-public partial class Anomalium : IEntity
+public partial class Anomalia : IEntity
 {
     public int Id { get; set; }
 
@@ -71,7 +71,7 @@ public partial class Anomalium : IEntity
 
     public virtual CatMecanismoInteracao? MecanismoSecundario { get; set; }
 
-    public virtual ICollection<PericiaAnomalium> PericiaAnomalia { get; set; } = new List<PericiaAnomalium>();
+    public virtual ICollection<PericiaAnomalia> PericiaAnomalia { get; set; } = new List<PericiaAnomalia>();
 
     public virtual CatTipoMaterium TipoMateria { get; set; } = null!;
 }

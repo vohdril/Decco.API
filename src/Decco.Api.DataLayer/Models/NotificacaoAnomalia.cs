@@ -15,5 +15,5 @@ public partial class NotificacaoAnomalia : IEntity
     public int? AnomaliaId { get; set; }
     public DateTime? DataResolucao { get; set; }
 
-    public virtual Anomalium? Anomalium { get; set; }
+    public virtual Anomalia? Anomalia { get; set; }
 }

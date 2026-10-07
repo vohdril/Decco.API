@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Decco.Api.DataLayer.Configurations;
 
-public class AnomaliumConfiguration : IEntityTypeConfiguration<Anomalium>
+public class AnomaliaConfiguration : IEntityTypeConfiguration<Anomalia>
 {
-    public void Configure(EntityTypeBuilder<Anomalium> builder)
+    public void Configure(EntityTypeBuilder<Anomalia> builder)
     {
         builder.HasKey(e => e.Id).HasName("PK__Anomalia__3214EC07CC25B98D");
 
-        builder.ToTable(tb =>
+        builder.ToTable("Anomalia", tb =>
             {
                 tb.HasTrigger("TR_Anomalia_Update_Date");
                 tb.HasTrigger("TR_Anomalia_Validar_Mecanismos");
@@ -62,12 +62,12 @@ public class AnomaliumConfiguration : IEntityTypeConfiguration<Anomalium>
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("FK__Anomalia__Classe__403A8C7D");
 
-        builder.HasOne(d => d.MecanismoPrimario).WithMany(p => p.AnomaliumMecanismoPrimarios)
+        builder.HasOne(d => d.MecanismoPrimario).WithMany(p => p.AnomaliaMecanismoPrimarios)
             .HasForeignKey(d => d.MecanismoPrimarioId)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("FK__Anomalia__Mecani__4316F928");
 
-        builder.HasOne(d => d.MecanismoSecundario).WithMany(p => p.AnomaliumMecanismoSecundarios)
+        builder.HasOne(d => d.MecanismoSecundario).WithMany(p => p.AnomaliaMecanismoSecundarios)
             .HasForeignKey(d => d.MecanismoSecundarioId)
             .HasConstraintName("FK__Anomalia__Mecani__440B1D61");
 

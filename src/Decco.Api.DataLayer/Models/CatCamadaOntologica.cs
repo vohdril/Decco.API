@@ -17,7 +17,7 @@ public partial class CatCamadaOntologica : IEntity
 
     public int Prioridade { get; set; }
 
-    public virtual ICollection<Anomalium> Anomalia { get; set; } = new List<Anomalium>();
+    public virtual ICollection<Anomalia> Anomalia { get; set; } = new List<Anomalia>();
 
     public virtual ICollection<CatMecanismoInteracao> CatMecanismoInteracaos { get; set; } = new List<CatMecanismoInteracao>();
 

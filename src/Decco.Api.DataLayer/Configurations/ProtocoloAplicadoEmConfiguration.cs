@@ -14,7 +14,7 @@ public class ProtocoloAplicadoEmConfiguration : IEntityTypeConfiguration<Protoco
         builder.Property(e => e.DataInicio).HasColumnType("datetime");
         builder.Property(e => e.DataFim).HasColumnType("datetime");
 
-        builder.HasOne(d => d.Anomalium).WithMany(p => p.ProtocoloAplicadoEms)
+        builder.HasOne(d => d.Anomalia).WithMany(p => p.ProtocoloAplicadoEms)
             .HasForeignKey(d => d.AnomaliaId)
             .HasConstraintName("FK_Protocolo_AplicadoEm_Anomalia");
 
