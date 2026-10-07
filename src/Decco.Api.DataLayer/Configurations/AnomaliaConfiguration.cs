@@ -20,6 +20,8 @@ public class AnomaliaConfiguration : IEntityTypeConfiguration<Anomalia>
 
         builder.HasIndex(e => e.Status, "IX_Anomalia_Status");
 
+        builder.HasIndex(e => e.InstalacaoContencaoId, "IX_Anomalia_InstalacaoContencao");
+
         builder.HasIndex(e => e.CodigoScp, "UQ__Anomalia__F02FBC8831139E8E").IsUnique();
 
         builder.Property(e => e.CodigoScp)
@@ -40,7 +42,6 @@ public class AnomaliaConfiguration : IEntityTypeConfiguration<Anomalia>
             .HasColumnName("IEIA_D_Base");
         builder.Property(e => e.NomeComum).HasMaxLength(255);
         builder.Property(e => e.ResponsavelPesquisa).HasMaxLength(255);
-        builder.Property(e => e.SitioContencao).HasMaxLength(100);
         builder.Property(e => e.Status)
             .HasMaxLength(20)
             .IsUnicode(false)
@@ -83,5 +84,9 @@ public class AnomaliaConfiguration : IEntityTypeConfiguration<Anomalia>
         builder.HasOne(d => d.Periculosidade).WithMany(p => p.Anomalia)
             .HasForeignKey(d => d.PericulosidadeId)
             .HasConstraintName("FK_Anomalia_Periculosidade");
+
+        builder.HasOne(d => d.InstalacaoContencao).WithMany()
+            .HasForeignKey(d => d.InstalacaoContencaoId)
+            .HasConstraintName("FK_Anomalia_InstalacaoContencao");
     }
 }

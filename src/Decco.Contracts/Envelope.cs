@@ -6,6 +6,16 @@ public class RequestBase<T>
     public string? Culture { get; set; }
 }
 
+/// <summary>
+/// Paginação pedida pelo cliente — corpo do POST de List. Base 0, como o
+/// PagedResponse que volta. (A Foundation.API expõe base 1 para fora e converte.)
+/// </summary>
+public class PageRequest
+{
+    public int PageIndex { get; set; } = 0;
+    public int PageSize { get; set; } = 50;
+}
+
 public class ResponseBase<T>
 {
     public T? Data { get; set; }

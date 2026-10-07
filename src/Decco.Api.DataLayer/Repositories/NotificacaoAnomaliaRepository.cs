@@ -16,17 +16,22 @@ public class NotificacaoAnomaliaRepository : INotificacaoAnomaliaRepository
 
     public async Task<List<NotificacaoAnomalia>> ListAsync()
     {
-        return await _ctx.Set<NotificacaoAnomalia>().ToListAsync();
+        return await _ctx.Set<NotificacaoAnomalia>()
+            .Include(n => n.Instalacao)
+            .ToListAsync();
     }
 
     public async Task<NotificacaoAnomalia?> GetByIdAsync(int id)
     {
-        return await _ctx.Set<NotificacaoAnomalia>().FirstOrDefaultAsync(n => n.Id == id);
+        return await _ctx.Set<NotificacaoAnomalia>()
+            .Include(n => n.Instalacao)
+            .FirstOrDefaultAsync(n => n.Id == id);
     }
 
     public async Task<int> InsertAsync(NotificacaoAnomalia notificacao)
     {
-        using var conn = _ctx.Database.GetDbConnection();
+        // Conexão do DbContext — sem `using` (ver AnomaliaRepository.InsertAsync).
+        var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
         p.Add("@Titulo", notificacao.Titulo);
         p.Add("@Descricao", notificacao.Descricao);
@@ -34,6 +39,7 @@ public class NotificacaoAnomaliaRepository : INotificacaoAnomaliaRepository
         p.Add("@NivelPrioridade", notificacao.NivelPrioridade);
         p.Add("@Relator", notificacao.Relator);
         p.Add("@AnomaliaId", notificacao.AnomaliaId);
+        p.Add("@InstalacaoId", notificacao.InstalacaoId);
 
         var result = await conn.QueryAsync<int>(
             "sp_NotificacaoAnomalia_Inserir",
@@ -45,16 +51,17 @@ public class NotificacaoAnomaliaRepository : INotificacaoAnomaliaRepository
 
     public async Task UpdateAsync(NotificacaoAnomalia notificacao)
     {
-        using var conn = _ctx.Database.GetDbConnection();
+        var conn = _ctx.Database.GetDbConnection();
         var p = new DynamicParameters();
         p.Add("@Id", notificacao.Id);
         p.Add("@Titulo", notificacao.Titulo);
         p.Add("@Descricao", notificacao.Descricao);
         p.Add("@LocalIdentificado", notificacao.LocalIdentificado);
-        p.Add("@NivelPrioridade", notificacao.NivelPrioridade);
+        p.Add("@NivelPrioridade", notificacao.NivelPrioridade == 0 ? null : notificacao.NivelPrioridade);
         p.Add("@Status", notificacao.Status);
         p.Add("@Relator", notificacao.Relator);
         p.Add("@AnomaliaId", notificacao.AnomaliaId);
+        p.Add("@InstalacaoId", notificacao.InstalacaoId);
 
         await conn.ExecuteAsync("sp_NotificacaoAnomalia_Atualizar", p, commandType: CommandType.StoredProcedure);
     }

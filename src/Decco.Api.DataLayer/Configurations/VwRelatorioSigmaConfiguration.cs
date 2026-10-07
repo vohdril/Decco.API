@@ -24,7 +24,8 @@ public class VwRelatorioSigmaConfiguration : IEntityTypeConfiguration<VwRelatori
             .HasColumnName("CodigoSCP");
         builder.Property(e => e.NomeComum).HasMaxLength(255);
         builder.Property(e => e.ResponsavelPesquisa).HasMaxLength(255);
-        builder.Property(e => e.SitioContencao).HasMaxLength(100);
+        builder.Property(e => e.InstalacaoContencaoCodigo).HasMaxLength(20).IsUnicode(false);
+        builder.Property(e => e.InstalacaoContencao).HasMaxLength(255);
         builder.Property(e => e.UltimoIncidente).HasColumnType("datetime");
     }
 }

@@ -21,7 +21,9 @@ public partial class VwRelatorioSigma
 
     public DateTime? UltimoIncidente { get; set; }
 
-    public string? SitioContencao { get; set; }
+    public string? InstalacaoContencaoCodigo { get; set; }
+
+    public string? InstalacaoContencao { get; set; }
 
     public string? ResponsavelPesquisa { get; set; }
 }

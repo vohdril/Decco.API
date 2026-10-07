@@ -38,9 +38,12 @@ public class AnomaliaService : IAnomaliaService
     {
         try
         {
-            var entities = await _repo.ListAsync();
-            var total = entities.Count;
-            var items = entities.Skip(page * pageSize).Take(pageSize).Select(MapToDto).ToList();
+            page = Math.Max(0, page);
+            pageSize = Math.Clamp(pageSize, 1, 200);
+
+            // Paginação no banco (Skip/Take no repositório), não em memória.
+            var (entities, total) = await _repo.ListAsync(page, pageSize);
+            var items = entities.Select(MapToDto).ToList();
 
             return new PagedResponse<AnomaliaDto>
             {
@@ -110,30 +113,51 @@ public class AnomaliaService : IAnomaliaService
         CodigoSCP = entity.CodigoScp,
         NomeComum = entity.NomeComum,
         Descricao = entity.Descricao,
+        ClasseObjetoId = entity.ClasseObjetoId,
         ClasseObjeto = entity.ClasseObjeto?.Nome ?? string.Empty,
+        CamadaOntologicaId = entity.CamadaOntologicaId,
         CamadaOntologica = entity.CamadaOntologica?.Nome ?? string.Empty,
+        TipoMateriaId = entity.TipoMateriaId,
         TipoMateria = entity.TipoMateria?.Nome ?? string.Empty,
+        CognicaoAparenteId = entity.CognicaoAparenteId,
+        CognicaoAparente = entity.CognicaoAparente?.Nome,
+        PericulosidadeId = entity.PericulosidadeId,
+        Periculosidade = entity.Periculosidade?.Nome,
+        MecanismoPrimarioId = entity.MecanismoPrimarioId,
         MecanismoPrimario = entity.MecanismoPrimario?.Nome ?? string.Empty,
+        MecanismoSecundarioId = entity.MecanismoSecundarioId,
         MecanismoSecundario = entity.MecanismoSecundario?.Nome,
         IEIA_D_Base = entity.IeiaDBase,
         FatorCoerenciaSpin = entity.FatorCoerenciaSpin,
         Status = entity.Status ?? "ATIVA",
-        SitioContencao = entity.SitioContencao,
+        InstalacaoContencaoId = entity.InstalacaoContencaoId,
+        InstalacaoContencaoCodigo = entity.InstalacaoContencao?.Codigo,
+        InstalacaoContencao = entity.InstalacaoContencao?.Nome,
         ResponsavelPesquisa = entity.ResponsavelPesquisa,
         DataCriacao = entity.DataCriacao ?? DateTime.Now,
         DataAtualizacao = entity.DataAtualizacao ?? DateTime.Now
     };
 
+    // Os Ids de classificação NÃO eram mapeados (o DTO só tinha os nomes), então
+    // todo Insert chegava à SP com ClasseObjetoId/CamadaOntologicaId/... = 0 e
+    // falhava na FK. Coberto por AnomaliaServiceTests.
     private static Anomalia MapToEntity(AnomaliaDto dto) => new()
     {
         Id = dto.Id,
         CodigoScp = dto.CodigoSCP,
         NomeComum = dto.NomeComum,
         Descricao = dto.Descricao,
+        ClasseObjetoId = dto.ClasseObjetoId,
+        CamadaOntologicaId = dto.CamadaOntologicaId,
+        TipoMateriaId = dto.TipoMateriaId,
+        CognicaoAparenteId = dto.CognicaoAparenteId,
+        PericulosidadeId = dto.PericulosidadeId,
+        MecanismoPrimarioId = dto.MecanismoPrimarioId,
+        MecanismoSecundarioId = dto.MecanismoSecundarioId,
         IeiaDBase = dto.IEIA_D_Base,
         FatorCoerenciaSpin = dto.FatorCoerenciaSpin,
         Status = dto.Status,
-        SitioContencao = dto.SitioContencao,
+        InstalacaoContencaoId = dto.InstalacaoContencaoId,
         ResponsavelPesquisa = dto.ResponsavelPesquisa
     };
 }

@@ -18,8 +18,14 @@ public class NotificacaoAnomaliaConfiguration : IEntityTypeConfiguration<Notific
         builder.Property(e => e.Relator).HasMaxLength(255);
         builder.Property(e => e.DataResolucao).HasColumnType("datetime");
 
+        builder.HasIndex(e => e.InstalacaoId, "IX_NotificacaoAnomalia_Instalacao");
+
         builder.HasOne(d => d.Anomalia).WithMany(p => p.NotificacaoAnomalias)
             .HasForeignKey(d => d.AnomaliaId)
             .HasConstraintName("FK_NotificacaoAnomalia_Anomalia");
+
+        builder.HasOne(d => d.Instalacao).WithMany()
+            .HasForeignKey(d => d.InstalacaoId)
+            .HasConstraintName("FK_NotificacaoAnomalia_Instalacao");
     }
 }

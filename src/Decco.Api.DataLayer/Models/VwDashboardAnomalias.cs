@@ -31,7 +31,9 @@ public partial class VwDashboardAnomalias
 
     public string? Status { get; set; }
 
-    public string? SitioContencao { get; set; }
+    public string? InstalacaoContencaoCodigo { get; set; }
+
+    public string? InstalacaoContencao { get; set; }
 
     public int NivelRisco { get; set; }
 

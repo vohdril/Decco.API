@@ -42,7 +42,8 @@ public class VwDashboardAnomaliasConfiguration : IEntityTypeConfiguration<VwDash
             .HasMaxLength(100)
             .IsUnicode(false);
         builder.Property(e => e.NomeComum).HasMaxLength(255);
-        builder.Property(e => e.SitioContencao).HasMaxLength(100);
+        builder.Property(e => e.InstalacaoContencaoCodigo).HasMaxLength(20).IsUnicode(false);
+        builder.Property(e => e.InstalacaoContencao).HasMaxLength(255);
         builder.Property(e => e.Status)
             .HasMaxLength(20)
             .IsUnicode(false);

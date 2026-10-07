@@ -13,7 +13,9 @@ public partial class NotificacaoAnomalia : IEntity
     public int NivelPrioridade { get; set; }
     public string? Relator { get; set; }
     public int? AnomaliaId { get; set; }
+    public int? InstalacaoId { get; set; }
     public DateTime? DataResolucao { get; set; }
 
     public virtual Anomalia? Anomalia { get; set; }
+    public virtual Instalacao? Instalacao { get; set; }
 }

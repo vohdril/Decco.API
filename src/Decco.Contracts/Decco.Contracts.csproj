@@ -1,9 +1,28 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!--
+    Pacote consumido pela Foundation.API (feed local: C:\Decco\localNuget).
+    SemVer: 2.0.0 é MAJOR porque remove LaboratorioDto e AnomaliaDto.SitioContencao
+    — um consumidor da 1.x deixa de compilar. Mudança só aditiva = MINOR.
+  -->
+  <PropertyGroup>
+    <PackageId>Decco.Contracts</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>vohdril</Authors>
+    <Description>Contratos da Decco.API: envelope (RequestBase/ResponseBase/PagedResponse/PageRequest) e DTOs do DeccoDB. Sandbox de estudos, dados fictícios.</Description>
+    <PackageReleaseNotes>2.0.0 — Instalacao e Operacao. Remove LaboratorioDto (vira InstalacaoDto do tipo LABORATORIO) e AnomaliaDto.SitioContencao (vira InstalacaoContencaoId/Codigo/Nome). AnomaliaDto ganha os Ids de classificação. Novos: InstalacaoDto, CatTipoInstalacaoDto, OperacaoDto, OperacaoFiltroDto, CatOperacaoDto, PageRequest. NotificacaoAnomaliaDto ganha InstalacaoId/InstalacaoCodigo.</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/vohdril/Decco.API</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>decco;contracts;envelope</PackageTags>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Os DTOs sem <summary> são autoexplicativos; não transformar isso em warning. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
 </Project>

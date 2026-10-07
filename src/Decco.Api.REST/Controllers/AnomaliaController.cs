@@ -15,10 +15,12 @@ public class AnomaliaController : ControllerBase
         _service = service;
     }
 
+    // Data é opcional: `{ "data": {} }` ou `{ "data": null }` devolvem a 1ª página de 50.
     [HttpPost("List")]
-    public async Task<PagedResponse<AnomaliaDto>> List([FromBody] RequestBase<object> request)
+    public async Task<PagedResponse<AnomaliaDto>> List([FromBody] RequestBase<PageRequest?> request)
     {
-        return await _service.List();
+        var pagina = request.Data ?? new PageRequest();
+        return await _service.List(pagina.PageIndex, pagina.PageSize);
     }
 
     [HttpPost("Get")]

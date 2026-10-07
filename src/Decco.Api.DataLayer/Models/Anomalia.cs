@@ -33,7 +33,7 @@ public partial class Anomalia : IEntity
 
     public string? Status { get; set; }
 
-    public string? SitioContencao { get; set; }
+    public int? InstalacaoContencaoId { get; set; }
 
     public string? ResponsavelPesquisa { get; set; }
 
@@ -60,6 +60,8 @@ public partial class Anomalia : IEntity
     public virtual CatPericulosidade? Periculosidade { get; set; }
 
     public virtual ICollection<Incidente> Incidentes { get; set; } = new List<Incidente>();
+
+    public virtual Instalacao? InstalacaoContencao { get; set; }
 
     public virtual ICollection<Localidade> Localidades { get; set; } = new List<Localidade>();
 

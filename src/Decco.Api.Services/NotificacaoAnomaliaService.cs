@@ -79,14 +79,17 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
         Id = e.Id, Titulo = e.Titulo, Descricao = e.Descricao,
         LocalIdentificado = e.LocalIdentificado, DataHora = e.DataHora,
         Status = e.Status ?? "PENDENTE", NivelPrioridade = e.NivelPrioridade,
-        Relator = e.Relator, AnomaliaId = e.AnomaliaId, DataResolucao = e.DataResolucao
+        Relator = e.Relator, AnomaliaId = e.AnomaliaId,
+        InstalacaoId = e.InstalacaoId, InstalacaoCodigo = e.Instalacao?.Codigo,
+        DataResolucao = e.DataResolucao
     };
 
     private static NotificacaoAnomalia MapToEntity(NotificacaoAnomaliaDto dto) => new()
     {
         Id = dto.Id, Titulo = dto.Titulo, Descricao = dto.Descricao,
         LocalIdentificado = dto.LocalIdentificado, Status = dto.Status,
-        NivelPrioridade = dto.NivelPrioridade, Relator = dto.Relator, AnomaliaId = dto.AnomaliaId
+        NivelPrioridade = dto.NivelPrioridade, Relator = dto.Relator, AnomaliaId = dto.AnomaliaId,
+        InstalacaoId = dto.InstalacaoId
     };
 
 }

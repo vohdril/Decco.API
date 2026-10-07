@@ -11,5 +11,11 @@ public class NotificacaoAnomaliaDto
     public int NivelPrioridade { get; set; }
     public string? Relator { get; set; }
     public int? AnomaliaId { get; set; }
+
+    // Instalação conhecida onde o relato foi feito — opcional: LocalIdentificado
+    // continua sendo a descrição textual, e um relato de fora do perímetro fica sem ela.
+    public int? InstalacaoId { get; set; }
+    public string? InstalacaoCodigo { get; set; }
+
     public DateTime? DataResolucao { get; set; }
 }
