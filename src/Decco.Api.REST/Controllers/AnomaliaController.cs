@@ -15,7 +15,7 @@ public class AnomaliaController : ControllerBase
         _service = service;
     }
 
-    [HttpPost("List")]
+    [HttpGet("List")]
     public async Task<PagedResponse<AnomaliaDto>> List([FromBody] RequestBase<object> request)
     {
         return await _service.List();
