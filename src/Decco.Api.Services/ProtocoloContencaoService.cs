@@ -1,4 +1,5 @@
 using Decco.Api.Common;
+using Microsoft.Extensions.Logging;
 using Decco.Api.Contracts;
 using Decco.Api.DataLayer.Models;
 using Decco.Api.DataLayer.Repositories;
@@ -9,10 +10,12 @@ namespace Decco.Api.Services;
 public class ProtocoloContencaoService : IProtocoloContencaoService
 {
     private readonly IProtocoloContencaoRepository _repo;
+    private readonly ILogger<ProtocoloContencaoService> _logger;
 
-    public ProtocoloContencaoService(IProtocoloContencaoRepository repo)
+    public ProtocoloContencaoService(IProtocoloContencaoRepository repo, ILogger<ProtocoloContencaoService> logger)
     {
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<SingleResponse<List<ProtocoloContencaoDto>>> List()
@@ -23,7 +26,7 @@ public class ProtocoloContencaoService : IProtocoloContencaoService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<ProtocoloContencaoDto>> { Data = dtos };
         }
-        catch { return ErrorResponseHelper.Fail<List<ProtocoloContencaoDto>>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<List<ProtocoloContencaoDto>>(_logger, ex); }
     }
 
     public async Task<SingleResponse<ProtocoloContencaoDto>> Get(int id)
@@ -34,7 +37,7 @@ public class ProtocoloContencaoService : IProtocoloContencaoService
             if (entity == null) return ErrorResponseHelper.NotFound<ProtocoloContencaoDto>();
             return new SingleResponse<ProtocoloContencaoDto> { Data = MapToDto(entity) };
         }
-        catch { return ErrorResponseHelper.Fail<ProtocoloContencaoDto>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<ProtocoloContencaoDto>(_logger, ex); }
     }
 
     public async Task<SingleResponse<int>> Insert(ProtocoloContencaoDto dto)
@@ -44,7 +47,7 @@ public class ProtocoloContencaoService : IProtocoloContencaoService
             var id = await _repo.InsertAsync(MapToEntity(dto));
             return new SingleResponse<int> { Data = id };
         }
-        catch { return ErrorResponseHelper.Fail<int>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<int>(_logger, ex); }
     }
 
     public async Task<SingleResponse<bool>> Update(ProtocoloContencaoDto dto)
@@ -56,7 +59,7 @@ public class ProtocoloContencaoService : IProtocoloContencaoService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch { return ErrorResponseHelper.Fail<bool>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<bool>(_logger, ex); }
     }
 
     public async Task<SingleResponse<bool>> Delete(int id)
@@ -68,7 +71,7 @@ public class ProtocoloContencaoService : IProtocoloContencaoService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch { return ErrorResponseHelper.Fail<bool>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<bool>(_logger, ex); }
     }
 
     private static ProtocoloContencaoDto MapToDto(ProtocoloContencao e) => new()

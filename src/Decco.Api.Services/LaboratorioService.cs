@@ -1,4 +1,5 @@
 using Decco.Api.Common;
+using Microsoft.Extensions.Logging;
 using Decco.Api.Contracts;
 using Decco.Api.DataLayer.Models;
 using Decco.Api.DataLayer.Repositories;
@@ -9,10 +10,12 @@ namespace Decco.Api.Services;
 public class LaboratorioService : ILaboratorioService
 {
     private readonly ILaboratorioRepository _repo;
+    private readonly ILogger<LaboratorioService> _logger;
 
-    public LaboratorioService(ILaboratorioRepository repo)
+    public LaboratorioService(ILaboratorioRepository repo, ILogger<LaboratorioService> logger)
     {
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<SingleResponse<List<LaboratorioDto>>> List()
@@ -23,7 +26,7 @@ public class LaboratorioService : ILaboratorioService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<LaboratorioDto>> { Data = dtos };
         }
-        catch { return ErrorResponseHelper.Fail<List<LaboratorioDto>>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<List<LaboratorioDto>>(_logger, ex); }
     }
 
     public async Task<SingleResponse<LaboratorioDto>> Get(int id)
@@ -34,7 +37,7 @@ public class LaboratorioService : ILaboratorioService
             if (entity == null) return ErrorResponseHelper.NotFound<LaboratorioDto>();
             return new SingleResponse<LaboratorioDto> { Data = MapToDto(entity) };
         }
-        catch { return ErrorResponseHelper.Fail<LaboratorioDto>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<LaboratorioDto>(_logger, ex); }
     }
 
     public async Task<SingleResponse<int>> Insert(LaboratorioDto dto)
@@ -44,7 +47,7 @@ public class LaboratorioService : ILaboratorioService
             var id = await _repo.InsertAsync(MapToEntity(dto));
             return new SingleResponse<int> { Data = id };
         }
-        catch { return ErrorResponseHelper.Fail<int>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<int>(_logger, ex); }
     }
 
     public async Task<SingleResponse<bool>> Update(LaboratorioDto dto)
@@ -56,7 +59,7 @@ public class LaboratorioService : ILaboratorioService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch { return ErrorResponseHelper.Fail<bool>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<bool>(_logger, ex); }
     }
 
     public async Task<SingleResponse<bool>> Delete(int id)
@@ -68,7 +71,7 @@ public class LaboratorioService : ILaboratorioService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch { return ErrorResponseHelper.Fail<bool>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<bool>(_logger, ex); }
     }
 
     private static LaboratorioDto MapToDto(Laboratorio e) => new()

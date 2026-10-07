@@ -1,4 +1,5 @@
 using Decco.Api.Common;
+using Microsoft.Extensions.Logging;
 using Decco.Api.DataLayer.Repositories;
 using Decco.Api.DataLayer.Models;
 using Decco.Contracts;
@@ -8,10 +9,12 @@ namespace Decco.Api.Services;
 public class CatMecanismoInteracaoService : ICatMecanismoInteracaoService
 {
     private readonly ICatMecanismoInteracaoRepository _repo;
+    private readonly ILogger<CatMecanismoInteracaoService> _logger;
 
-    public CatMecanismoInteracaoService(ICatMecanismoInteracaoRepository repo)
+    public CatMecanismoInteracaoService(ICatMecanismoInteracaoRepository repo, ILogger<CatMecanismoInteracaoService> logger)
     {
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<SingleResponse<List<CatMecanismoInteracaoDto>>> List()
@@ -22,10 +25,7 @@ public class CatMecanismoInteracaoService : ICatMecanismoInteracaoService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<CatMecanismoInteracaoDto>> { Data = dtos };
         }
-        catch
-        {
-            return ErrorResponseHelper.Fail<List<CatMecanismoInteracaoDto>>();
-        }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<List<CatMecanismoInteracaoDto>>(_logger, ex); }
     }
 
     public async Task<SingleResponse<CatMecanismoInteracaoDto>> Get(int id)
@@ -38,9 +38,9 @@ public class CatMecanismoInteracaoService : ICatMecanismoInteracaoService
 
             return new SingleResponse<CatMecanismoInteracaoDto> { Data = MapToDto(entity) };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<CatMecanismoInteracaoDto>();
+            return ErrorResponseHelper.Fail<CatMecanismoInteracaoDto>(_logger, ex);
         }
     }
 
@@ -50,9 +50,9 @@ public class CatMecanismoInteracaoService : ICatMecanismoInteracaoService
         {
             return new SingleResponse<int> { Data = await _repo.InsertAsync(MapToEntity(dto)) };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<int>();
+            return ErrorResponseHelper.Fail<int>(_logger, ex);
         }
     }
 
@@ -63,9 +63,9 @@ public class CatMecanismoInteracaoService : ICatMecanismoInteracaoService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 
@@ -76,9 +76,9 @@ public class CatMecanismoInteracaoService : ICatMecanismoInteracaoService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 

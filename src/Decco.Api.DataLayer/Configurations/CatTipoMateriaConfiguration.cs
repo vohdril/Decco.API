@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Decco.Api.DataLayer.Configurations;
 
-public class CatTipoMateriumConfiguration : IEntityTypeConfiguration<CatTipoMaterium>
+public class CatTipoMateriaConfiguration : IEntityTypeConfiguration<CatTipoMateria>
 {
-    public void Configure(EntityTypeBuilder<CatTipoMaterium> builder)
+    public void Configure(EntityTypeBuilder<CatTipoMateria> builder)
     {
         builder.HasKey(e => e.Id).HasName("PK__Cat_Tipo__3214EC07CDADACA6");
 

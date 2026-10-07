@@ -6,35 +6,35 @@ namespace Decco.Api.REST.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CatTipoMateriumController : ControllerBase
+public class CatTipoMateriaController : ControllerBase
 {
-    private readonly ICatTipoMateriumService _service;
+    private readonly ICatTipoMateriaService _service;
 
-    public CatTipoMateriumController(ICatTipoMateriumService service)
+    public CatTipoMateriaController(ICatTipoMateriaService service)
     {
         _service = service;
     }
 
     [HttpPost("List")]
-    public async Task<SingleResponse<List<CatTipoMateriumDto>>> List([FromBody] RequestBase<object> request)
+    public async Task<SingleResponse<List<CatTipoMateriaDto>>> List([FromBody] RequestBase<object> request)
     {
         return await _service.List();
     }
 
     [HttpPost("Get")]
-    public async Task<SingleResponse<CatTipoMateriumDto>> Get([FromBody] RequestBase<int> request)
+    public async Task<SingleResponse<CatTipoMateriaDto>> Get([FromBody] RequestBase<int> request)
     {
         return await _service.Get(request.Data);
     }
 
     [HttpPost("Insert")]
-    public async Task<SingleResponse<int>> Insert([FromBody] RequestBase<CatTipoMateriumDto> request)
+    public async Task<SingleResponse<int>> Insert([FromBody] RequestBase<CatTipoMateriaDto> request)
     {
         return await _service.Insert(request.Data);
     }
 
     [HttpPost("Update")]
-    public async Task<SingleResponse<bool>> Update([FromBody] RequestBase<CatTipoMateriumDto> request)
+    public async Task<SingleResponse<bool>> Update([FromBody] RequestBase<CatTipoMateriaDto> request)
     {
         return await _service.Update(request.Data);
     }

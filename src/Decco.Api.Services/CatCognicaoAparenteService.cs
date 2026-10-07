@@ -1,4 +1,5 @@
 using Decco.Api.Common;
+using Microsoft.Extensions.Logging;
 using Decco.Api.DataLayer.Repositories;
 using Decco.Api.DataLayer.Models;
 using Decco.Contracts;
@@ -8,10 +9,12 @@ namespace Decco.Api.Services;
 public class CatCognicaoAparenteService : ICatCognicaoAparenteService
 {
     private readonly ICatCognicaoAparenteRepository _repo;
+    private readonly ILogger<CatCognicaoAparenteService> _logger;
 
-    public CatCognicaoAparenteService(ICatCognicaoAparenteRepository repo)
+    public CatCognicaoAparenteService(ICatCognicaoAparenteRepository repo, ILogger<CatCognicaoAparenteService> logger)
     {
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<SingleResponse<List<CatCognicaoAparenteDto>>> List()
@@ -22,10 +25,7 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<CatCognicaoAparenteDto>> { Data = dtos };
         }
-        catch
-        {
-            return ErrorResponseHelper.Fail<List<CatCognicaoAparenteDto>>();
-        }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<List<CatCognicaoAparenteDto>>(_logger, ex); }
     }
 
     public async Task<SingleResponse<CatCognicaoAparenteDto>> Get(int id)
@@ -38,9 +38,9 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
 
             return new SingleResponse<CatCognicaoAparenteDto> { Data = MapToDto(entity) };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<CatCognicaoAparenteDto>();
+            return ErrorResponseHelper.Fail<CatCognicaoAparenteDto>(_logger, ex);
         }
     }
 
@@ -50,9 +50,9 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
         {
             return new SingleResponse<int> { Data = await _repo.InsertAsync(MapToEntity(dto)) };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<int>();
+            return ErrorResponseHelper.Fail<int>(_logger, ex);
         }
     }
 
@@ -63,9 +63,9 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 
@@ -76,9 +76,9 @@ public class CatCognicaoAparenteService : ICatCognicaoAparenteService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 

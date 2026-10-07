@@ -1,4 +1,5 @@
 using Decco.Api.Common;
+using Microsoft.Extensions.Logging;
 using Decco.Api.DataLayer.Repositories;
 using Decco.Api.DataLayer.Models;
 using Decco.Contracts;
@@ -8,10 +9,12 @@ namespace Decco.Api.Services;
 public class CatPericulosidadeService : ICatPericulosidadeService
 {
     private readonly ICatPericulosidadeRepository _repo;
+    private readonly ILogger<CatPericulosidadeService> _logger;
 
-    public CatPericulosidadeService(ICatPericulosidadeRepository repo)
+    public CatPericulosidadeService(ICatPericulosidadeRepository repo, ILogger<CatPericulosidadeService> logger)
     {
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<SingleResponse<List<CatPericulosidadeDto>>> List()
@@ -22,10 +25,7 @@ public class CatPericulosidadeService : ICatPericulosidadeService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<CatPericulosidadeDto>> { Data = dtos };
         }
-        catch
-        {
-            return ErrorResponseHelper.Fail<List<CatPericulosidadeDto>>();
-        }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<List<CatPericulosidadeDto>>(_logger, ex); }
     }
 
     public async Task<SingleResponse<CatPericulosidadeDto>> Get(int id)
@@ -38,9 +38,9 @@ public class CatPericulosidadeService : ICatPericulosidadeService
 
             return new SingleResponse<CatPericulosidadeDto> { Data = MapToDto(entity) };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<CatPericulosidadeDto>();
+            return ErrorResponseHelper.Fail<CatPericulosidadeDto>(_logger, ex);
         }
     }
 
@@ -50,9 +50,9 @@ public class CatPericulosidadeService : ICatPericulosidadeService
         {
             return new SingleResponse<int> { Data = await _repo.InsertAsync(MapToEntity(dto)) };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<int>();
+            return ErrorResponseHelper.Fail<int>(_logger, ex);
         }
     }
 
@@ -63,9 +63,9 @@ public class CatPericulosidadeService : ICatPericulosidadeService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 
@@ -76,9 +76,9 @@ public class CatPericulosidadeService : ICatPericulosidadeService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 

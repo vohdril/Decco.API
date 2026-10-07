@@ -1,4 +1,5 @@
 using Decco.Api.Common;
+using Microsoft.Extensions.Logging;
 using Decco.Api.Contracts;
 using Decco.Api.DataLayer.Models;
 using Decco.Api.DataLayer.Repositories;
@@ -9,10 +10,12 @@ namespace Decco.Api.Services;
 public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
 {
     private readonly INotificacaoAnomaliaRepository _repo;
+    private readonly ILogger<NotificacaoAnomaliaService> _logger;
 
-    public NotificacaoAnomaliaService(INotificacaoAnomaliaRepository repo)
+    public NotificacaoAnomaliaService(INotificacaoAnomaliaRepository repo, ILogger<NotificacaoAnomaliaService> logger)
     {
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<SingleResponse<List<NotificacaoAnomaliaDto>>> List()
@@ -23,7 +26,7 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<NotificacaoAnomaliaDto>> { Data = dtos };
         }
-        catch { return ErrorResponseHelper.Fail<List<NotificacaoAnomaliaDto>>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<List<NotificacaoAnomaliaDto>>(_logger, ex); }
     }
 
     public async Task<SingleResponse<NotificacaoAnomaliaDto>> Get(int id)
@@ -34,7 +37,7 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
             if (entity == null) return ErrorResponseHelper.NotFound<NotificacaoAnomaliaDto>();
             return new SingleResponse<NotificacaoAnomaliaDto> { Data = MapToDto(entity) };
         }
-        catch { return ErrorResponseHelper.Fail<NotificacaoAnomaliaDto>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<NotificacaoAnomaliaDto>(_logger, ex); }
     }
 
     public async Task<SingleResponse<int>> Insert(NotificacaoAnomaliaDto dto)
@@ -44,7 +47,7 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
             var id = await _repo.InsertAsync(MapToEntity(dto));
             return new SingleResponse<int> { Data = id };
         }
-        catch { return ErrorResponseHelper.Fail<int>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<int>(_logger, ex); }
     }
 
     public async Task<SingleResponse<bool>> Update(NotificacaoAnomaliaDto dto)
@@ -56,7 +59,7 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch { return ErrorResponseHelper.Fail<bool>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<bool>(_logger, ex); }
     }
 
     public async Task<SingleResponse<bool>> Delete(int id)
@@ -68,7 +71,7 @@ public class NotificacaoAnomaliaService : INotificacaoAnomaliaService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch { return ErrorResponseHelper.Fail<bool>(); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<bool>(_logger, ex); }
     }
 
     private static NotificacaoAnomaliaDto MapToDto(NotificacaoAnomalia e) => new()

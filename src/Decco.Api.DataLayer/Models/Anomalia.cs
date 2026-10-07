@@ -73,5 +73,5 @@ public partial class Anomalia : IEntity
 
     public virtual ICollection<PericiaAnomalia> PericiaAnomalia { get; set; } = new List<PericiaAnomalia>();
 
-    public virtual CatTipoMaterium TipoMateria { get; set; } = null!;
+    public virtual CatTipoMateria TipoMateria { get; set; } = null!;
 }

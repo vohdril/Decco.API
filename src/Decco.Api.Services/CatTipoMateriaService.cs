@@ -6,45 +6,45 @@ using Decco.Contracts;
 
 namespace Decco.Api.Services;
 
-public class CatCamadaOntologicaService : ICatCamadaOntologicaService
+public class CatTipoMateriaService : ICatTipoMateriaService
 {
-    private readonly ICatCamadaOntologicaRepository _repo;
-    private readonly ILogger<CatCamadaOntologicaService> _logger;
+    private readonly ICatTipoMateriaRepository _repo;
+    private readonly ILogger<CatTipoMateriaService> _logger;
 
-    public CatCamadaOntologicaService(ICatCamadaOntologicaRepository repo, ILogger<CatCamadaOntologicaService> logger)
+    public CatTipoMateriaService(ICatTipoMateriaRepository repo, ILogger<CatTipoMateriaService> logger)
     {
         _repo = repo;
         _logger = logger;
     }
 
-    public async Task<SingleResponse<List<CatCamadaOntologicaDto>>> List()
+    public async Task<SingleResponse<List<CatTipoMateriaDto>>> List()
     {
         try
         {
             var list = await _repo.ListAsync();
             var dtos = list.Select(MapToDto).ToList();
-            return new SingleResponse<List<CatCamadaOntologicaDto>> { Data = dtos };
+            return new SingleResponse<List<CatTipoMateriaDto>> { Data = dtos };
         }
-        catch (Exception ex) { return ErrorResponseHelper.Fail<List<CatCamadaOntologicaDto>>(_logger, ex); }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<List<CatTipoMateriaDto>>(_logger, ex); }
     }
 
-    public async Task<SingleResponse<CatCamadaOntologicaDto>> Get(int id)
+    public async Task<SingleResponse<CatTipoMateriaDto>> Get(int id)
     {
         try
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null)
-                return ErrorResponseHelper.NotFound<CatCamadaOntologicaDto>();
+                return ErrorResponseHelper.NotFound<CatTipoMateriaDto>();
 
-            return new SingleResponse<CatCamadaOntologicaDto> { Data = MapToDto(entity) };
+            return new SingleResponse<CatTipoMateriaDto> { Data = MapToDto(entity) };
         }
         catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<CatCamadaOntologicaDto>(_logger, ex);
+            return ErrorResponseHelper.Fail<CatTipoMateriaDto>(_logger, ex);
         }
     }
 
-    public async Task<SingleResponse<int>> Insert(CatCamadaOntologicaDto dto)
+    public async Task<SingleResponse<int>> Insert(CatTipoMateriaDto dto)
     {
         try
         {
@@ -56,7 +56,7 @@ public class CatCamadaOntologicaService : ICatCamadaOntologicaService
         }
     }
 
-    public async Task<SingleResponse<bool>> Update(CatCamadaOntologicaDto dto)
+    public async Task<SingleResponse<bool>> Update(CatTipoMateriaDto dto)
     {
         try
         {
@@ -82,24 +82,20 @@ public class CatCamadaOntologicaService : ICatCamadaOntologicaService
         }
     }
 
-    private static CatCamadaOntologicaDto MapToDto(CatCamadaOntologica e) => new()
+    private static CatTipoMateriaDto MapToDto(CatTipoMateria e) => new()
     {
         Id = e.Id,
-        Simbolo = e.Simbolo,
         Nome = e.Nome,
         Descricao = e.Descricao,
-        ForcaFundamentalId = e.ForcaFundamentalId,
-        Prioridade = e.Prioridade
+        IsResistenteSupressores = e.IsResistenteSupressores
     };
 
-    private static CatCamadaOntologica MapToEntity(CatCamadaOntologicaDto dto) => new()
+    private static CatTipoMateria MapToEntity(CatTipoMateriaDto dto) => new()
     {
         Id = dto.Id,
-        Simbolo = dto.Simbolo,
         Nome = dto.Nome,
         Descricao = dto.Descricao,
-        ForcaFundamentalId = dto.ForcaFundamentalId,
-        Prioridade = dto.Prioridade
+        IsResistenteSupressores = dto.IsResistenteSupressores
     };
 
 }

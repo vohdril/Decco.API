@@ -1,4 +1,5 @@
 using Decco.Api.Common;
+using Microsoft.Extensions.Logging;
 using Decco.Api.Contracts;
 using Decco.Api.DataLayer.Models;
 using Decco.Api.DataLayer.Repositories;
@@ -9,10 +10,12 @@ namespace Decco.Api.Services;
 public class AnomaliaService : IAnomaliaService
 {
     private readonly IAnomaliaRepository _repo;
+    private readonly ILogger<AnomaliaService> _logger;
 
-    public AnomaliaService(IAnomaliaRepository repo)
+    public AnomaliaService(IAnomaliaRepository repo, ILogger<AnomaliaService> logger)
     {
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<SingleResponse<AnomaliaDto>> Get(int id)
@@ -25,9 +28,9 @@ public class AnomaliaService : IAnomaliaService
 
             return new SingleResponse<AnomaliaDto> { Data = MapToDto(entity) };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<AnomaliaDto>();
+            return ErrorResponseHelper.Fail<AnomaliaDto>(_logger, ex);
         }
     }
 
@@ -47,13 +50,9 @@ public class AnomaliaService : IAnomaliaService
                 TotalRecords = total
             };
         }
-        catch
+        catch (Exception ex)
         {
-            return new PagedResponse<AnomaliaDto>
-            {
-                Status = ResponseStatus.Fail,
-                Error = new ErrorInfo { Code = ErrorCodes.InternalError.GetCode(), Message = ErrorCodes.InternalError.DefaultMessage }
-            };
+            return ErrorResponseHelper.FailPaged<AnomaliaDto>(_logger, ex);
         }
     }
 
@@ -65,9 +64,9 @@ public class AnomaliaService : IAnomaliaService
             var id = await _repo.InsertAsync(entity);
             return new SingleResponse<int> { Data = id };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<int>();
+            return ErrorResponseHelper.Fail<int>(_logger, ex);
         }
     }
 
@@ -82,9 +81,9 @@ public class AnomaliaService : IAnomaliaService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 
@@ -99,9 +98,9 @@ public class AnomaliaService : IAnomaliaService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 

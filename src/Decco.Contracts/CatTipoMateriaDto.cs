@@ -1,6 +1,6 @@
 namespace Decco.Contracts;
 
-public class CatTipoMateriumDto
+public class CatTipoMateriaDto
 {
     public int Id { get; set; }
     public string Nome { get; set; } = string.Empty;

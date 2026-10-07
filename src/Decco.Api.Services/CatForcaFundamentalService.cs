@@ -1,4 +1,5 @@
 using Decco.Api.Common;
+using Microsoft.Extensions.Logging;
 using Decco.Api.DataLayer.Repositories;
 using Decco.Api.DataLayer.Models;
 using Decco.Contracts;
@@ -8,10 +9,12 @@ namespace Decco.Api.Services;
 public class CatForcaFundamentalService : ICatForcaFundamentalService
 {
     private readonly ICatForcaFundamentalRepository _repo;
+    private readonly ILogger<CatForcaFundamentalService> _logger;
 
-    public CatForcaFundamentalService(ICatForcaFundamentalRepository repo)
+    public CatForcaFundamentalService(ICatForcaFundamentalRepository repo, ILogger<CatForcaFundamentalService> logger)
     {
         _repo = repo;
+        _logger = logger;
     }
 
     public async Task<SingleResponse<List<CatForcaFundamentalDto>>> List()
@@ -22,10 +25,7 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
             var dtos = list.Select(MapToDto).ToList();
             return new SingleResponse<List<CatForcaFundamentalDto>> { Data = dtos };
         }
-        catch
-        {
-            return ErrorResponseHelper.Fail<List<CatForcaFundamentalDto>>();
-        }
+        catch (Exception ex) { return ErrorResponseHelper.Fail<List<CatForcaFundamentalDto>>(_logger, ex); }
     }
 
     public async Task<SingleResponse<CatForcaFundamentalDto>> Get(int id)
@@ -38,9 +38,9 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
 
             return new SingleResponse<CatForcaFundamentalDto> { Data = MapToDto(entity) };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<CatForcaFundamentalDto>();
+            return ErrorResponseHelper.Fail<CatForcaFundamentalDto>(_logger, ex);
         }
     }
 
@@ -50,9 +50,9 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
         {
             return new SingleResponse<int> { Data = await _repo.InsertAsync(MapToEntity(dto)) };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<int>();
+            return ErrorResponseHelper.Fail<int>(_logger, ex);
         }
     }
 
@@ -63,9 +63,9 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
             await _repo.UpdateAsync(MapToEntity(dto));
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 
@@ -76,9 +76,9 @@ public class CatForcaFundamentalService : ICatForcaFundamentalService
             await _repo.DeleteAsync(id);
             return new SingleResponse<bool> { Data = true };
         }
-        catch
+        catch (Exception ex)
         {
-            return ErrorResponseHelper.Fail<bool>();
+            return ErrorResponseHelper.Fail<bool>(_logger, ex);
         }
     }
 
