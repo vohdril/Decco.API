@@ -1,7 +1,7 @@
 ---
 name: decco-maker
 version: 11
-description: Skill DIDÁTICA de análise e geração de código do sandbox "Decco": APIs .NET que espelham a arquitetura Omnibees sobre o DeccoDB (catálogo fictício de anomalias). Tier-0 = dois repositórios reais taggeados como modelo-template (Decco.API + Decco.Dashboard com micro-frontend via Module Federation 2.0). Alvos: Decco.API (core .NET 8, EF Core+Dapper), Decco.Legacy.API (stack legado .NET 4.8/EF6/EDMX/Unity/OWIN) e Foundation.API (fachada). O problema integrador do Tier-1 é "implementar a tela de login": Docker (DB), Auth JWT (BE), Login real (FE), Conventional Commits (GT). Use para evoluir os repositórios existentes; montar auth, cache, eventos; conectar ao DeccoDB; IdToCode; ou estudar conceitos (Docker, Redis, EF vs Dapper, Kafka, auth, Module Federation). Cobre a TRILHA DE FRONT-END (React/Vite+MF): login real, estados de UI, modais Radix, seam mock↔API, micro-frontend com @module-federation/enhanced. Cobre a TRILHA DE BANCO DE DADOS (DB0-4): SQL schema com lore brasileiro, Docker+auth tables, CRUDs, NoSQL, Elasticsearch, poliglota. PIPELINE DE EXECUÇÃO tier-aware: validação em background a cada invocação (git diff × RoadMaps × rubrica), trio anterior/atual/próximo por track, conflito de tier como alerta, progresso assimétrico como bússola de estudo, e backlog de achados no DECCO-BACKLOG.md do projeto. MODELO DIDÁTICO de respostas (reference/20): explicações com mínimo 5 linhas por conceito, seção "Problemas que resolve" com pesquisa em docs oficiais + visão de mercado, guia em dois caminhos (CLI + GUI/IDE), exemplo operável (nunca hello-world), roteiro de investigação e gancho para o próximo passo. Protocolo [FEEDBACK] para refatoração de respostas registrada no backlog. Ex.: "evolua para v0.2.0 com login", "rode um diagnóstico", "em que tier estou?". IMUTÁVEL: não se autoedita (estado vive no projeto), só muda sob pedido. Idioma: PT-BR.
+description: Skill DIDÁTICA de análise e geração de código do sandbox "Decco": APIs .NET que espelham a arquitetura Omnibees sobre o DeccoDB (catálogo fictício de anomalias). Tier-0 = dois repositórios reais taggeados como modelo-template (Decco.API + Decco.Dashboard com micro-frontend via Module Federation 2.0). Alvos: Decco.API (core .NET 8, EF Core+Dapper), Decco.Legacy.API (stack legado .NET 4.8/EF6/EDMX/Unity/OWIN) e Foundation.API (fachada). O problema integrador do Tier-1 é "implementar a tela de login": Docker (DB), Auth JWT (BE), Login real (FE), Conventional Commits (GT). Use para evoluir os repositórios existentes; montar auth, cache, eventos; conectar ao DeccoDB; IdToCode; ou estudar conceitos (Docker, Redis, EF vs Dapper, Kafka, auth, Module Federation). Cobre a TRILHA DE FRONT-END (React/Vite+MF): login real, estados de UI, modais Radix, seam mock↔API, micro-frontend com @module-federation/enhanced. Cobre a TRILHA DE BANCO DE DADOS (DB0-4): SQL schema com lore brasileiro, Docker+auth tables, CRUDs, NoSQL, Elasticsearch, poliglota. PIPELINE DE EXECUÇÃO tier-aware: validação em background a cada invocação (git diff × RoadMaps × rubrica), trio anterior/atual/próximo por track, conflito de tier como alerta, progresso assimétrico como bússola de estudo, e backlog de achados no DECCO-BACKLOG.md do projeto. MODELO DIDÁTICO de respostas (reference/20): explicações com mínimo 5 linhas por conceito, seção "Problemas que resolve" com pesquisa em docs oficiais + visão de mercado, guia em dois caminhos (CLI + GUI/IDE), exemplo operável (nunca hello-world), roteiro de investigação e gancho para o próximo passo. Protocolo [FEEDBACK] para refatoração de respostas registrada no backlog. Ex.: "evolua para v0.2.0 com login", "rode um diagnóstico", "em que tier estou?". IMUTÁVEL: não se autoedita (estado vive no projeto), só muda sob pedido. Idioma: PT-BR na conversa e na documentação; código SEMPRE em inglês (Regra de ouro 17).
 ---
 
 # Decco Maker
@@ -19,7 +19,8 @@ O sandbox recria, num ambiente **livre e isolado**, a relação Omnibees **Conec
 > **dual-stack**: mantém dossiês profundos do **moderno** (`reference/06`) e do **legado** (`reference/05`) reais, e o
 > blueprint da réplica legada (`reference/07`). O aprendizado central é a **comparação moderno × legado** do mesmo core.
 
-> **Idioma:** responder em **português do Brasil**. Identificadores, tipos e termos técnicos ficam em inglês (é o uso do código).
+> **Idioma:** responder em **português do Brasil**. Tudo o que se escreve **dentro do código** sai em inglês —
+> identificadores, comentários, mensagens de log e de erro, commits (Regra de ouro 17).
 >
 > **Princípio didático (o coração desta skill):** toda resposta tem duas obrigações — (1) **entregar o quê/como** (a análise
 > correta ou o código fiel às convenções) e (2) **abrir o porquê** — explicar a decisão de desenho, qual alternativa foi
@@ -148,6 +149,25 @@ O sandbox recria, num ambiente **livre e isolado**, a relação Omnibees **Conec
     ao problema que resolvem; (4) **guia em dois caminhos** (CLI + GUI/IDE) com tabelas comparativas e páginas-chave da doc;
     (5) exemplo **operável** (nunca hello-world); (6) roteiro de investigação prática; (7) gancho para o próximo passo do
     roadmap. O operador sinaliza refatoração com **`[FEEDBACK]`** → refatorar e registrar no `DECCO-BACKLOG.md` do projeto.
+17. **Código sempre em inglês** (diretriz de 2026-10-07 — é a **regra de ouro 12 da `decco-maker` v12** do hub
+    `Decco.Skills/skills-hub`, `decco/knowledge-drops/028`; aqui ganha o número 17 porque a 12 desta versão é a
+    imutabilidade). Tudo o que a skill escreve **dentro do código** sai em inglês: nomes de tipos, membros, parâmetros,
+    variáveis e arquivos de código; comentários e XML docs; mensagens de log, de exceção e de erro da API; descrições do
+    OpenAPI; commits (`feat(api): add ...`). No banco: comentários de script, variáveis locais do T-SQL e
+    `MS_Description`. **Ficam como estão:**
+    - o **vocabulário de domínio do DeccoDB** — tabelas, colunas, SPs e seus parâmetros, e os DTOs/entidades que os
+      espelham (`Anomalia`, `NomeComum`, `CodigoSCP`, `IncluirSubinstalacoes`). Traduzir o schema é migração destrutiva:
+      só como pedido próprio, com expand/contract (avaliação e glossário PT→EN em `decco-compass/reference/28` e `29`
+      do hub);
+    - **migrações já aplicadas** (imutáveis — o journal do DbUp guarda o nome);
+    - os **textos de tela** do Dashboard (o produto é pt-BR), o conteúdo didático de `tierContent.ts`, os dados
+      mock/seed e as mensagens que o mock simula para a UI;
+    - a **conversa e a documentação** (READMEs, `DECCO-*.md`, esta skill) — em PT-BR.
+
+    Exemplo: `public sealed class AnomaliaService` / `private Task<int?> ResolveIdAsync(string code)` /
+    `// IdToCode lives here, in the service — the converter never does I/O.` / `throw new ApiException(code, path);`.
+    As `reference/`, `recipes/`, `templates/` e `assets/` desta versão ainda trazem identificadores em português;
+    **a regra 17 prevalece** sobre eles ao gerar código novo.
 
 ## Diretrizes de comportamento (sempre ativas)
 
