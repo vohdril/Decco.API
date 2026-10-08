@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var corsPolicy = "DashboardOrigins";
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-    ?? ["http://localhost:5173"];
+    ?? ["http://localhost:5173", "http://localhost:4173"];
 
 builder.Services.AddCors(options =>
 {
