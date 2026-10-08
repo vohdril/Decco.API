@@ -1,0 +1,2962 @@
+{
+  "info": {
+    "_postman_id": "71e63191-0bfa-4195-80c7-f2265b04c872",
+    "name": "Decco.API",
+    "description": "Decco.API — the core. Every endpoint is a POST that carries the Decco.Contracts envelope:\n`{ \"data\": …, \"metadata\": null, \"culture\": \"pt-BR\" }` → `{ \"data\": …, \"status\": 0|1|2, \"error\": … }` (0 Success, 1 PartialSuccess, 2 Fail).\n\nGlobal variables (import Decco.postman_globals.json): `decco_baseUrl`, `access_token` (sent as Bearer; not validated yet), `culture` and one `<entity>_id` per resource.\n\nFlow: **Insert** stores the new Id in `<entity>_id` and `<entity>_created_id`, so Get → Update → Delete act on that record. **Update** and **Delete** refuse to run on an Id that was not created by Insert (seed data stays intact); set `<entity>_created_id` to the same value to override on purpose.\n\nThe request and response field names are Portuguese because Decco.Contracts 3.0.0 still is (see Decco.Database README / decco-compass reference/28).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Every envelope endpoint answers HTTP 200; failures travel inside the envelope (status 2).",
+          "if (pm.request.method === \"POST\") {",
+          "  pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+          "  const text = pm.response.text();",
+          "  if (text) {",
+          "    const json = pm.response.json();",
+          "    pm.test(\"Envelope status is not Fail (2)\", () => pm.expect(json.status).to.not.eql(2));",
+          "  }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Anomalia",
+      "description": "Anomaly. POST envelope endpoints of `api/Anomalia` (RequestBase → ResponseBase).\n\nList is paged (PageRequest: pageIndex 0-based). Insert needs valid catalog Ids (class, layer, matter, mechanism).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": { \"pageIndex\": 0, \"pageSize\": 50 },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Anomalia/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Anomalia",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{anomaly_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Anomalia/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Anomalia",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"anomaly_id\", json.data);",
+                  "  pm.globals.set(\"anomaly_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"codigoSCP\": \"SCP-9001\",\n    \"nomeComum\": \"Espécime de Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"classeObjetoId\": 1,\n    \"classeObjeto\": \"\",\n    \"camadaOntologicaId\": 1,\n    \"camadaOntologica\": \"\",\n    \"tipoMateriaId\": 1,\n    \"tipoMateria\": \"\",\n    \"cognicaoAparenteId\": null,\n    \"periculosidadeId\": null,\n    \"mecanismoPrimarioId\": 1,\n    \"mecanismoPrimario\": \"\",\n    \"mecanismoSecundarioId\": null,\n    \"fatorCoerenciaSpin\": null,\n    \"status\": \"ATIVA\",\n    \"instalacaoContencaoId\": {{scope_facility_id}},\n    \"responsavelPesquisa\": \"Postman\"\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Anomalia/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Anomalia",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"anomaly_id\"));",
+                  "if (id !== String(pm.globals.get(\"anomaly_created_id\"))) {",
+                  "  console.warn(`Skipped: anomaly_id=${id} was not created by \"Insert\". To update it on purpose, set anomaly_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{anomaly_id}},\n    \"codigoSCP\": \"SCP-9001\",\n    \"nomeComum\": \"Espécime de Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"classeObjetoId\": 1,\n    \"classeObjeto\": \"\",\n    \"camadaOntologicaId\": 1,\n    \"camadaOntologica\": \"\",\n    \"tipoMateriaId\": 1,\n    \"tipoMateria\": \"\",\n    \"cognicaoAparenteId\": null,\n    \"periculosidadeId\": null,\n    \"mecanismoPrimarioId\": 1,\n    \"mecanismoPrimario\": \"\",\n    \"mecanismoSecundarioId\": null,\n    \"fatorCoerenciaSpin\": null,\n    \"status\": \"ATIVA\",\n    \"instalacaoContencaoId\": {{scope_facility_id}},\n    \"responsavelPesquisa\": \"Postman\"\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Anomalia/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Anomalia",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"anomaly_id\"));",
+                  "if (id !== String(pm.globals.get(\"anomaly_created_id\"))) {",
+                  "  console.warn(`Skipped: anomaly_id=${id} was not created by \"Insert\". To delete it on purpose, set anomaly_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{anomaly_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Anomalia/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Anomalia",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CatCognicaoAparente",
+      "description": "ApparentCognition. POST envelope endpoints of `api/CatCognicaoAparente` (RequestBase → ResponseBase).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCognicaoAparente/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCognicaoAparente",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{apparent_cognition_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCognicaoAparente/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCognicaoAparente",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"apparent_cognition_id\", json.data);",
+                  "  pm.globals.set(\"apparent_cognition_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"codigo\": \"TS\",\n    \"nome\": \"Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\"\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCognicaoAparente/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCognicaoAparente",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"apparent_cognition_id\"));",
+                  "if (id !== String(pm.globals.get(\"apparent_cognition_created_id\"))) {",
+                  "  console.warn(`Skipped: apparent_cognition_id=${id} was not created by \"Insert\". To update it on purpose, set apparent_cognition_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{apparent_cognition_id}},\n    \"codigo\": \"TS\",\n    \"nome\": \"Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\"\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCognicaoAparente/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCognicaoAparente",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"apparent_cognition_id\"));",
+                  "if (id !== String(pm.globals.get(\"apparent_cognition_created_id\"))) {",
+                  "  console.warn(`Skipped: apparent_cognition_id=${id} was not created by \"Insert\". To delete it on purpose, set apparent_cognition_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{apparent_cognition_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCognicaoAparente/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCognicaoAparente",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CatPericulosidade",
+      "description": "DangerLevel. POST envelope endpoints of `api/CatPericulosidade` (RequestBase → ResponseBase).\n\nThe 1–9 scale is full (Nivel is UNIQUE and CHECK 1..9): Insert fails until a level is freed.",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatPericulosidade/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatPericulosidade",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{danger_level_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatPericulosidade/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatPericulosidade",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"danger_level_id\", json.data);",
+                  "  pm.globals.set(\"danger_level_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"nivel\": 9,\n    \"nome\": \"Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"corAlerta\": \"#888888\"\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatPericulosidade/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatPericulosidade",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"danger_level_id\"));",
+                  "if (id !== String(pm.globals.get(\"danger_level_created_id\"))) {",
+                  "  console.warn(`Skipped: danger_level_id=${id} was not created by \"Insert\". To update it on purpose, set danger_level_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{danger_level_id}},\n    \"nivel\": 9,\n    \"nome\": \"Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"corAlerta\": \"#888888\"\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatPericulosidade/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatPericulosidade",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"danger_level_id\"));",
+                  "if (id !== String(pm.globals.get(\"danger_level_created_id\"))) {",
+                  "  console.warn(`Skipped: danger_level_id=${id} was not created by \"Insert\". To delete it on purpose, set danger_level_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{danger_level_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatPericulosidade/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatPericulosidade",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CatTipoMateria",
+      "description": "MatterType. POST envelope endpoints of `api/CatTipoMateria` (RequestBase → ResponseBase).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoMateria/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoMateria",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{matter_type_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoMateria/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoMateria",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"matter_type_id\", json.data);",
+                  "  pm.globals.set(\"matter_type_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"nome\": \"Teste Postman\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"isResistenteSupressores\": false\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoMateria/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoMateria",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"matter_type_id\"));",
+                  "if (id !== String(pm.globals.get(\"matter_type_created_id\"))) {",
+                  "  console.warn(`Skipped: matter_type_id=${id} was not created by \"Insert\". To update it on purpose, set matter_type_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{matter_type_id}},\n    \"nome\": \"Teste Postman (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"isResistenteSupressores\": false\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoMateria/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoMateria",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"matter_type_id\"));",
+                  "if (id !== String(pm.globals.get(\"matter_type_created_id\"))) {",
+                  "  console.warn(`Skipped: matter_type_id=${id} was not created by \"Insert\". To delete it on purpose, set matter_type_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{matter_type_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoMateria/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoMateria",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CatForcaFundamental",
+      "description": "FundamentalForce. POST envelope endpoints of `api/CatForcaFundamental` (RequestBase → ResponseBase).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatForcaFundamental/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatForcaFundamental",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{fundamental_force_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatForcaFundamental/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatForcaFundamental",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"fundamental_force_id\", json.data);",
+                  "  pm.globals.set(\"fundamental_force_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"simbolo\": \"Test\",\n    \"nome\": \"Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"particulaPortadora\": null\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatForcaFundamental/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatForcaFundamental",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"fundamental_force_id\"));",
+                  "if (id !== String(pm.globals.get(\"fundamental_force_created_id\"))) {",
+                  "  console.warn(`Skipped: fundamental_force_id=${id} was not created by \"Insert\". To update it on purpose, set fundamental_force_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{fundamental_force_id}},\n    \"simbolo\": \"Test\",\n    \"nome\": \"Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"particulaPortadora\": null\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatForcaFundamental/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatForcaFundamental",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"fundamental_force_id\"));",
+                  "if (id !== String(pm.globals.get(\"fundamental_force_created_id\"))) {",
+                  "  console.warn(`Skipped: fundamental_force_id=${id} was not created by \"Insert\". To delete it on purpose, set fundamental_force_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{fundamental_force_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatForcaFundamental/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatForcaFundamental",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CatCamadaOntologica",
+      "description": "OntologicalLayer. POST envelope endpoints of `api/CatCamadaOntologica` (RequestBase → ResponseBase).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCamadaOntologica/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCamadaOntologica",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{ontological_layer_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCamadaOntologica/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCamadaOntologica",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"ontological_layer_id\", json.data);",
+                  "  pm.globals.set(\"ontological_layer_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"simbolo\": \"TEST\",\n    \"nome\": \"Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"forcaFundamentalId\": 1,\n    \"prioridade\": 1\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCamadaOntologica/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCamadaOntologica",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"ontological_layer_id\"));",
+                  "if (id !== String(pm.globals.get(\"ontological_layer_created_id\"))) {",
+                  "  console.warn(`Skipped: ontological_layer_id=${id} was not created by \"Insert\". To update it on purpose, set ontological_layer_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{ontological_layer_id}},\n    \"simbolo\": \"TEST\",\n    \"nome\": \"Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"forcaFundamentalId\": 1,\n    \"prioridade\": 1\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCamadaOntologica/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCamadaOntologica",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"ontological_layer_id\"));",
+                  "if (id !== String(pm.globals.get(\"ontological_layer_created_id\"))) {",
+                  "  console.warn(`Skipped: ontological_layer_id=${id} was not created by \"Insert\". To delete it on purpose, set ontological_layer_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{ontological_layer_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatCamadaOntologica/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatCamadaOntologica",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CatMecanismoInteracao",
+      "description": "InteractionMechanism. POST envelope endpoints of `api/CatMecanismoInteracao` (RequestBase → ResponseBase).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatMecanismoInteracao/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatMecanismoInteracao",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{interaction_mechanism_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatMecanismoInteracao/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatMecanismoInteracao",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"interaction_mechanism_id\", json.data);",
+                  "  pm.globals.set(\"interaction_mechanism_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"codigo\": \"THETA-T\",\n    \"nome\": \"Theta-Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"camadaOntologicaId\": 1,\n    \"ehSubnatureza\": false\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatMecanismoInteracao/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatMecanismoInteracao",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"interaction_mechanism_id\"));",
+                  "if (id !== String(pm.globals.get(\"interaction_mechanism_created_id\"))) {",
+                  "  console.warn(`Skipped: interaction_mechanism_id=${id} was not created by \"Insert\". To update it on purpose, set interaction_mechanism_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{interaction_mechanism_id}},\n    \"codigo\": \"THETA-T\",\n    \"nome\": \"Theta-Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"camadaOntologicaId\": 1,\n    \"ehSubnatureza\": false\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatMecanismoInteracao/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatMecanismoInteracao",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"interaction_mechanism_id\"));",
+                  "if (id !== String(pm.globals.get(\"interaction_mechanism_created_id\"))) {",
+                  "  console.warn(`Skipped: interaction_mechanism_id=${id} was not created by \"Insert\". To delete it on purpose, set interaction_mechanism_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{interaction_mechanism_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatMecanismoInteracao/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatMecanismoInteracao",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CatTipoInstalacao",
+      "description": "FacilityType. POST envelope endpoints of `api/CatTipoInstalacao` (RequestBase → ResponseBase).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoInstalacao/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoInstalacao",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{facility_type_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoInstalacao/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoInstalacao",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"facility_type_id\", json.data);",
+                  "  pm.globals.set(\"facility_type_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"codigo\": \"TEST_TYPE\",\n    \"nome\": \"Tipo de Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"permiteFilhos\": false,\n    \"ativo\": true\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoInstalacao/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoInstalacao",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"facility_type_id\"));",
+                  "if (id !== String(pm.globals.get(\"facility_type_created_id\"))) {",
+                  "  console.warn(`Skipped: facility_type_id=${id} was not created by \"Insert\". To update it on purpose, set facility_type_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{facility_type_id}},\n    \"codigo\": \"TEST_TYPE\",\n    \"nome\": \"Tipo de Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"permiteFilhos\": false,\n    \"ativo\": true\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoInstalacao/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoInstalacao",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"facility_type_id\"));",
+                  "if (id !== String(pm.globals.get(\"facility_type_created_id\"))) {",
+                  "  console.warn(`Skipped: facility_type_id=${id} was not created by \"Insert\". To delete it on purpose, set facility_type_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{facility_type_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatTipoInstalacao/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatTipoInstalacao",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CatOperacao",
+      "description": "OperationType. POST envelope endpoints of `api/CatOperacao` (RequestBase → ResponseBase).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatOperacao/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatOperacao",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{operation_type_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatOperacao/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatOperacao",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"operation_type_id\", json.data);",
+                  "  pm.globals.set(\"operation_type_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"codigo\": \"TEST_OP\",\n    \"nome\": \"Operação de Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"requerAnomalia\": false,\n    \"nivelAcessoMinimo\": 1,\n    \"corAlerta\": \"#888888\",\n    \"ativo\": true\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatOperacao/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatOperacao",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"operation_type_id\"));",
+                  "if (id !== String(pm.globals.get(\"operation_type_created_id\"))) {",
+                  "  console.warn(`Skipped: operation_type_id=${id} was not created by \"Insert\". To update it on purpose, set operation_type_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{operation_type_id}},\n    \"codigo\": \"TEST_OP\",\n    \"nome\": \"Operação de Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"requerAnomalia\": false,\n    \"nivelAcessoMinimo\": 1,\n    \"corAlerta\": \"#888888\",\n    \"ativo\": true\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatOperacao/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatOperacao",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"operation_type_id\"));",
+                  "if (id !== String(pm.globals.get(\"operation_type_created_id\"))) {",
+                  "  console.warn(`Skipped: operation_type_id=${id} was not created by \"Insert\". To delete it on purpose, set operation_type_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{operation_type_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/CatOperacao/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "CatOperacao",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Instalacao",
+      "description": "Facility. POST envelope endpoints of `api/Instalacao` (RequestBase → ResponseBase).\n\nInsert uses type 1 (SITIO, a root): a non-root type needs instalacaoPaiId (TR_Facility_ValidateHierarchy).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Instalacao/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Instalacao",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{facility_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Instalacao/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Instalacao",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"facility_id\", json.data);",
+                  "  pm.globals.set(\"facility_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"codigo\": \"SITIO-TEST\",\n    \"nome\": \"Sítio de Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"tipoInstalacaoId\": 1,\n    \"instalacaoPaiId\": null,\n    \"responsavel\": \"Postman\",\n    \"especialidade\": null,\n    \"nivelAcessoMinimo\": 1,\n    \"status\": \"ATIVA\"\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Instalacao/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Instalacao",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"facility_id\"));",
+                  "if (id !== String(pm.globals.get(\"facility_created_id\"))) {",
+                  "  console.warn(`Skipped: facility_id=${id} was not created by \"Insert\". To update it on purpose, set facility_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{facility_id}},\n    \"codigo\": \"SITIO-TEST\",\n    \"nome\": \"Sítio de Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"tipoInstalacaoId\": 1,\n    \"instalacaoPaiId\": null,\n    \"responsavel\": \"Postman\",\n    \"especialidade\": null,\n    \"nivelAcessoMinimo\": 1,\n    \"status\": \"ATIVA\"\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Instalacao/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Instalacao",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"facility_id\"));",
+                  "if (id !== String(pm.globals.get(\"facility_created_id\"))) {",
+                  "  console.warn(`Skipped: facility_id=${id} was not created by \"Insert\". To delete it on purpose, set facility_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{facility_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Instalacao/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Instalacao",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Operacao",
+      "description": "Operation. POST envelope endpoints of `api/Operacao` (RequestBase → ResponseBase).\n\nList takes an OperacaoFilterDto (facility scope + clearance + paging). Insert with type 1 (INVESTIGACAO) needs no anomaly; the database generates the code.",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"instalacaoId\": {{scope_facility_id}},\n    \"incluirSubinstalacoes\": true,\n    \"tipoOperacaoId\": null,\n    \"status\": null,\n    \"anomaliaId\": null,\n    \"nivelAcessoUsuario\": 4,\n    \"pageIndex\": 0,\n    \"pageSize\": 50\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Operacao/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Operacao",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{operation_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Operacao/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Operacao",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"operation_id\", json.data);",
+                  "  pm.globals.set(\"operation_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"codigo\": null,\n    \"codinome\": \"Operação Postman\",\n    \"tipoOperacaoId\": 1,\n    \"instalacaoId\": {{scope_facility_id}},\n    \"anomaliaId\": null,\n    \"notificacaoId\": null,\n    \"protocoloId\": null,\n    \"objetivo\": \"Validar a API pela collection do Postman.\",\n    \"descricao\": null,\n    \"status\": \"PLANEJADA\",\n    \"prioridade\": 3,\n    \"nivelAcessoMinimo\": 1,\n    \"responsavel\": \"Postman\",\n    \"dataPrevisaoTermino\": null\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Operacao/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Operacao",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"operation_id\"));",
+                  "if (id !== String(pm.globals.get(\"operation_created_id\"))) {",
+                  "  console.warn(`Skipped: operation_id=${id} was not created by \"Insert\". To update it on purpose, set operation_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{operation_id}},\n    \"codigo\": null,\n    \"codinome\": \"Operação Postman (atualizado)\",\n    \"tipoOperacaoId\": 1,\n    \"instalacaoId\": {{scope_facility_id}},\n    \"anomaliaId\": null,\n    \"notificacaoId\": null,\n    \"protocoloId\": null,\n    \"objetivo\": \"Validar a API pela collection do Postman.\",\n    \"descricao\": null,\n    \"status\": \"PLANEJADA\",\n    \"prioridade\": 3,\n    \"nivelAcessoMinimo\": 1,\n    \"responsavel\": \"Postman\",\n    \"dataPrevisaoTermino\": null\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Operacao/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Operacao",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"operation_id\"));",
+                  "if (id !== String(pm.globals.get(\"operation_created_id\"))) {",
+                  "  console.warn(`Skipped: operation_id=${id} was not created by \"Insert\". To delete it on purpose, set operation_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{operation_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/Operacao/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Operacao",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "NotificacaoAnomalia",
+      "description": "AnomalyNotification. POST envelope endpoints of `api/NotificacaoAnomalia` (RequestBase → ResponseBase).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/NotificacaoAnomalia/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "NotificacaoAnomalia",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{notification_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/NotificacaoAnomalia/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "NotificacaoAnomalia",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"notification_id\", json.data);",
+                  "  pm.globals.set(\"notification_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"titulo\": \"Notificação de Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"localIdentificado\": \"Laboratório de testes\",\n    \"status\": \"PENDENTE\",\n    \"nivelPrioridade\": 3,\n    \"relator\": \"Postman\",\n    \"anomaliaId\": null,\n    \"instalacaoId\": {{scope_facility_id}}\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/NotificacaoAnomalia/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "NotificacaoAnomalia",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"notification_id\"));",
+                  "if (id !== String(pm.globals.get(\"notification_created_id\"))) {",
+                  "  console.warn(`Skipped: notification_id=${id} was not created by \"Insert\". To update it on purpose, set notification_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{notification_id}},\n    \"titulo\": \"Notificação de Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"localIdentificado\": \"Laboratório de testes\",\n    \"status\": \"PENDENTE\",\n    \"nivelPrioridade\": 3,\n    \"relator\": \"Postman\",\n    \"anomaliaId\": null,\n    \"instalacaoId\": {{scope_facility_id}}\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/NotificacaoAnomalia/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "NotificacaoAnomalia",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"notification_id\"));",
+                  "if (id !== String(pm.globals.get(\"notification_created_id\"))) {",
+                  "  console.warn(`Skipped: notification_id=${id} was not created by \"Insert\". To delete it on purpose, set notification_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{notification_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/NotificacaoAnomalia/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "NotificacaoAnomalia",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ProtocoloContencao",
+      "description": "ContainmentProtocol. POST envelope endpoints of `api/ProtocoloContencao` (RequestBase → ResponseBase).\n\nUpdate fails today with INTERNAL_ERROR: ProtocoloContencaoRepository calls sp_ProtocoloContencao_Atualizar, which does not exist (DECCO-BACKLOG).",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/ProtocoloContencao/List",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ProtocoloContencao",
+                "List"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{protocol_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/ProtocoloContencao/Get",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ProtocoloContencao",
+                "Get"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Insert",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Insert answers with the new Id: the following Get/Update/Delete act on this record.",
+                  "const json = pm.response.json();",
+                  "if (typeof json.data === \"number\" && json.data > 0) {",
+                  "  pm.globals.set(\"protocol_id\", json.data);",
+                  "  pm.globals.set(\"protocol_created_id\", json.data);",
+                  "}",
+                  "pm.test(\"Insert returns the new Id\", () => pm.expect(json.data).to.be.above(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": 0,\n    \"codigo\": \"PROT-TEST\",\n    \"titulo\": \"Protocolo de Teste\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"nivelUrgencia\": 2,\n    \"classesAplicaveis\": \"PACATO\",\n    \"passos\": \"1. Criar. 2. Ler. 3. Remover.\",\n    \"recursosNecessarios\": null\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/ProtocoloContencao/Insert",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ProtocoloContencao",
+                "Insert"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: update only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"protocol_id\"));",
+                  "if (id !== String(pm.globals.get(\"protocol_created_id\"))) {",
+                  "  console.warn(`Skipped: protocol_id=${id} was not created by \"Insert\". To update it on purpose, set protocol_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"id\": {{protocol_id}},\n    \"codigo\": \"PROT-TEST\",\n    \"titulo\": \"Protocolo de Teste (atualizado)\",\n    \"descricao\": \"Registro criado pela collection do Postman.\",\n    \"nivelUrgencia\": 2,\n    \"classesAplicaveis\": \"PACATO\",\n    \"passos\": \"1. Criar. 2. Ler. 3. Remover.\",\n    \"recursosNecessarios\": null\n  },\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/ProtocoloContencao/Update",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ProtocoloContencao",
+                "Update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Safety: delete only a record created by this collection's \"Insert\" (seed data stays intact).",
+                  "const id = String(pm.globals.get(\"protocol_id\"));",
+                  "if (id !== String(pm.globals.get(\"protocol_created_id\"))) {",
+                  "  console.warn(`Skipped: protocol_id=${id} was not created by \"Insert\". To delete it on purpose, set protocol_created_id to the same value.`);",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {{protocol_id}},\n  \"metadata\": null,\n  \"culture\": \"{{culture}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/ProtocoloContencao/Delete",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ProtocoloContencao",
+                "Delete"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "MfEndpoint",
+      "description": "Micro-frontend HTML fragments served to the Dashboard (GET, no envelope).",
+      "item": [
+        {
+          "name": "GET html",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/MfEndpoint/html",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "MfEndpoint",
+                "html"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET demo2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/MfEndpoint/demo2",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "MfEndpoint",
+                "demo2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET user-card",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{decco_baseUrl}}/api/MfEndpoint/user-card",
+              "host": [
+                "{{decco_baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "MfEndpoint",
+                "user-card"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
