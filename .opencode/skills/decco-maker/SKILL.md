@@ -154,11 +154,14 @@ O sandbox recria, num ambiente **livre e isolado**, a relação Omnibees **Conec
     imutabilidade). Tudo o que a skill escreve **dentro do código** sai em inglês: nomes de tipos, membros, parâmetros,
     variáveis e arquivos de código; comentários e XML docs; mensagens de log, de exceção e de erro da API; descrições do
     OpenAPI; commits (`feat(api): add ...`). No banco: comentários de script, variáveis locais do T-SQL e
-    `MS_Description`. **Ficam como estão:**
-    - o **vocabulário de domínio do DeccoDB** — tabelas, colunas, SPs e seus parâmetros, e os DTOs/entidades que os
-      espelham (`Anomalia`, `NomeComum`, `CodigoSCP`, `IncluirSubinstalacoes`). Traduzir o schema é migração destrutiva:
-      só como pedido próprio, com expand/contract (avaliação e glossário PT→EN em `decco-compass/reference/28` e `29`
-      do hub);
+    `MS_Description`. **O schema do DeccoDB também é inglês**, desde a `0005`: objeto novo nasce com o nome do
+    glossário (`decco-compass/reference/29` do hub). **Ficam como estão:**
+    - o **vocabulário do contrato da Decco.API**: entidades, DTOs e parâmetros que espelham o Decco.Contracts 3.0.0
+      (`Anomalia`, `NomeComum`, `CodigoSCP`, `IncluirSubinstalacoes`). Ficam assim até a Decco.API migrar, junto com o
+      Decco.Contracts 4.0.0. No Dashboard, só `data/dtos.ts` espelha esse fio; o modelo já é inglês;
+    - a **camada de compatibilidade** do DeccoDB (views da `0005`, `sp_*` e views antigas da `0006`), congelada até o
+      *contract* (`decco-compass/reference/28` do hub);
+    - os **valores** de dado: lore, nomes exibidos e códigos de status/tipo (`ATIVA`, `SITIO`);
     - **migrações já aplicadas** (imutáveis — o journal do DbUp guarda o nome);
     - os **textos de tela** do Dashboard (o produto é pt-BR), o conteúdo didático de `tierContent.ts`, os dados
       mock/seed e as mensagens que o mock simula para a UI;
