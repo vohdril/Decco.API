@@ -4,8 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "node scripts/free-port.mjs dev",
     "dev": "vite",
     "build": "vite build",
+    "prepreview": "node scripts/free-port.mjs preview",
     "preview": "vite preview"
   },
   "dependencies": {

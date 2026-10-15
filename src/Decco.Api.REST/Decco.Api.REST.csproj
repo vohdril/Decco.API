@@ -21,7 +21,18 @@
     <ProjectReference Include="..\Decco.Api.Root\Decco.Api.Root.csproj" />
   </ItemGroup>
 
-  <Target Name="KillPreviousInstance" BeforeTargets="CoreBuild">
-    <Exec Command="powershell -NoProfile -File &quot;$(MSBuildProjectDirectory)\kill-decco.ps1&quot;" IgnoreExitCode="true" />
+  <PropertyGroup>
+    <!-- Visual Studio skips the build - and FreePorts with it - when it judges the project up to
+         date. Turning that check off makes every start go through FreePorts. -->
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <!-- Frees the launch-profile ports and stops a previous instance before anything is compiled or
+       copied (see free-ports.ps1). BeforeBuild is the first step of Build; a hook on CoreBuild would
+       run only after CoreBuild's dependencies - compile and copy - had already hit the locked DLLs.
+       Windows only, and skipped in CI. -->
+  <Target Name="FreePorts" BeforeTargets="BeforeBuild" Condition="'$(OS)' == 'Windows_NT' And '$(CI)' != 'true'">
+    <Exec Command="powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\free-ports.ps1&quot; -ProjectDir &quot;$(MSBuildProjectDirectory)&quot; -AppName &quot;$(AssemblyName)&quot;"
+          IgnoreExitCode="true" StandardOutputImportance="high" />
   </Target>
 </Project>

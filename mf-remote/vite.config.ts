@@ -26,4 +26,15 @@ export default defineConfig({
   build: {
     target: "esnext",
   },
+  // Fixed ports, one step above the Dashboard's (5173 / 4173): Vite's defaults are the
+  // Dashboard's ports, and `predev` / `prepreview` free the configured port before starting —
+  // with the defaults, starting this remote would stop the Dashboard.
+  server: {
+    port: 5174,
+    strictPort: true,
+  },
+  preview: {
+    port: 4174,
+    strictPort: true,
+  },
 });
